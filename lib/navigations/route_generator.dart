@@ -1,6 +1,6 @@
-import 'package:expense_tracker/presentation/items_list/item_list.dart';
 import 'package:go_router/go_router.dart';
 
+import '../presentation/items_list/page/item_list_page.dart';
 import '../presentation/item_details/page/expense_details.dart';
 import '../presentation/landing/landing.dart';
 import 'error_screen.dart';
@@ -28,9 +28,9 @@ class RouteGenerator {
         builder: (context, state) => const ExpenseDetailsPage(),
       ),
       GoRoute(
-        name: ItemList.path,
-        path: "/${ItemList.path}",
-        builder: (context, state) => const ItemList(),
+        name: ItemListPage.path,
+        path: "/${ItemListPage.path}",
+        builder: (context, state) => const ItemListPage(),
       )
     ],
   );
