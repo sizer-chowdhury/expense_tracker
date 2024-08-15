@@ -3,6 +3,7 @@ import 'package:expense_tracker/domain/repository/fetch_expense_repository.dart'
 import 'package:expense_tracker/domain/use_case/fetch_expense_use_case.dart';
 import 'package:get_it/get_it.dart';
 
+import '../data/repository_imp/add_expense_repository_imp.dart';
 import '../data/repository_imp/item_list_repository_imp.dart';
 import '../domain/repository/add_new_expense_repository.dart';
 import '../domain/repository/item_list_repository.dart';
@@ -24,4 +25,6 @@ Future<void> setUpServiceLocators() async {
   sl.registerLazySingleton<FetchExpenseRepository>(
       () => FetchExpenseRepositoryImp());
   sl.registerLazySingleton<FetchExpenseUseCase>(() => FetchExpenseUseCase());
+  sl.registerLazySingleton<AddNewExpenseRepository>(
+      () => AddExpenseRepositoryImp());
 }
