@@ -3,6 +3,7 @@ import 'package:expense_tracker/presentation/item_details/bloc/add_new_expense_b
 import 'package:expense_tracker/presentation/item_details/bloc/add_new_expense_event.dart';
 import 'package:expense_tracker/presentation/item_details/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/extensions/extensions.dart';
 
@@ -175,8 +176,16 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   Widget _addNewExpenseForm() {
     return Column(
       children: [
-        CustomTextField(labelText: "Description", controller: title),
-        CustomTextField(labelText: "Price", controller: price),
+        CustomTextField(
+            labelText: "Description",
+            controller: title,
+            keyboardType: TextInputType.text),
+        CustomTextField(
+          labelText: "Price",
+          controller: price,
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

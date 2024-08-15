@@ -8,6 +8,6 @@ class AddNewExpenseUseCase {
 
   Future<String?> addNewExpense(
       {required String description, required int price}) async{
-    return await _addNewExpenseRepo.addNewExpense("mango", 50);
+    return await _addNewExpenseRepo.addNewExpense(description, price);
   }
 }
