@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../item_details/page/expense_details.dart';
-import '../items_list/items_list.dart';
+import '../items_list/page/item_list_page.dart';
 
 class LandingPage extends StatefulWidget {
   static const String path = "landing";

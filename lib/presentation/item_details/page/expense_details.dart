@@ -1,3 +1,6 @@
+import 'package:expense_tracker/config/service_locator.dart';
+import 'package:expense_tracker/presentation/item_details/bloc/add_new_expense_bloc.dart';
+import 'package:expense_tracker/presentation/item_details/bloc/add_new_expense_event.dart';
 import 'package:expense_tracker/presentation/item_details/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
@@ -5,6 +8,7 @@ import 'package:utilities/extensions/extensions.dart';
 
 class ExpenseDetailsPage extends StatefulWidget {
   static const String path = "expense-details";
+
   const ExpenseDetailsPage({super.key});
 
   @override
@@ -17,6 +21,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   TextEditingController price = TextEditingController();
   final BehaviorSubject<bool> _isAddButtonVisible =
       BehaviorSubject<bool>.seeded(true);
+  final AddNewExpenseBloc _addNewExpenseBloc = sl<AddNewExpenseBloc>();
 
   @override
   void dispose() {
@@ -24,6 +29,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
     title.dispose();
     price.dispose();
     _isAddButtonVisible.close();
+    _addNewExpenseBloc.close();
     super.dispose();
   }
 
@@ -187,6 +193,10 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
       child: ElevatedButton(
         onPressed: () {
           _isAddButtonVisible.add(true);
+          _addNewExpenseBloc.add(AddNewExpense(
+            description: title.text,
+            price: int.parse(price.text),
+          ));
         },
         style: _buttonStyle(),
         child: const Text('Save'),
