@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
-class AddNewExpenseEvent extends Equatable {
-  const AddNewExpenseEvent();
+class ExpenseDetailsEvent extends Equatable {
+  const ExpenseDetailsEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class AddNewExpense extends AddNewExpenseEvent {
+class AddNewExpense extends ExpenseDetailsEvent {
   final String description;
   final int price;
 
@@ -18,4 +18,10 @@ class AddNewExpense extends AddNewExpenseEvent {
 
   @override
   List<Object?> get props => [description, price];
+}
+
+class FetchExpenseEvent extends ExpenseDetailsEvent {
+  final DateTime date;
+
+  const FetchExpenseEvent({required this.date});
 }
