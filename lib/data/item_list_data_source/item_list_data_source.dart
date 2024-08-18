@@ -4,8 +4,8 @@ import 'database_service.dart';
 
 class ItemListDataSource {
   Future<(List<ItemModel>?, String?)> readItems() async {
-    String path = await getDatabasesPath();
-    String dbName = 'items.db';
+    String path = '/Users/bs00932/FlutterDevelopment/database';
+    String dbName = 'expense_db.db';
     Database database;
     try {
       database = await DatabaseService().openDataBase(path, dbName);
@@ -14,12 +14,12 @@ class ItemListDataSource {
       return (null, e.toString());
     }
 
-    try {
-      await DatabaseService().insertData(database);
-    } on Exception catch (e) {
-      print('error on insert data');
-      return (null, e.toString());
-    }
+    // try {
+    //   await DatabaseService().insertData(database);
+    // } on Exception catch (e) {
+    //   print('error on insert data');
+    //   return (null, e.toString());
+    // }
 
     late List<Map<String, dynamic>> results;
     try {

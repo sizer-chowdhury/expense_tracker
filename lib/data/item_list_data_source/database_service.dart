@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -7,7 +8,7 @@ class DatabaseService {
       join(path, dbName),
       onCreate: (db, version) async {
         await db.execute('''
-          CREATE TABLE items 
+          CREATE TABLE newItems 
           (id INTEGER PRIMARY KEY, 
           name TEXT, 
           price INTEGER, 
@@ -27,12 +28,12 @@ class DatabaseService {
     ''');
   }
 
-  Future<int> insertData(Database database) async {
-    return await database.insert('items', {
-      'name': 'ydsffs',
-      'price': 200,
-      // 'date': DateFormat('d MMM, yyyy').format(DateTime.now()),
-      'date': '08 Aug, 2024'
-    });
-  }
+  // Future<int> insertData(Database database) async {
+  //   return await database.insert('items', {
+  //     'name': 'ydsffs',
+  //     'price': 200,
+  //     'date': DateFormat('d MMM, yyyy').format(DateTime.now()),
+  //     // 'date': '08 Aug, 2024'
+  //   });
+  // }
 }

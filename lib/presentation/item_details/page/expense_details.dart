@@ -13,7 +13,9 @@ import 'package:utilities/extensions/extensions.dart';
 class ExpenseDetailsPage extends StatefulWidget {
   static const String path = "expense-details";
 
-  const ExpenseDetailsPage({super.key});
+  const ExpenseDetailsPage({super.key, required this.dateTime});
+
+  final DateTime dateTime;
 
   @override
   State<ExpenseDetailsPage> createState() => _ExpenseDetailsPageState();
@@ -30,7 +32,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(FetchExpenseEvent(date: DateTime(2024, 8, 16)));
+    _bloc.add(FetchExpenseEvent(date: widget.dateTime));
   }
 
   @override
@@ -234,7 +236,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
             description: title.text,
             price: int.parse(price.text),
           ));
-          _bloc.add(FetchExpenseEvent(date: DateTime(2024, 8, 16)));
+          _bloc.add(FetchExpenseEvent(date: widget.dateTime));
         },
         style: _buttonStyle(),
         child: const Text('Save'),
