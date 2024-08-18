@@ -8,7 +8,7 @@ class DatabaseService {
       join(path, dbName),
       onCreate: (db, version) async {
         await db.execute('''
-          CREATE TABLE newItems 
+          CREATE TABLE items 
           (id INTEGER PRIMARY KEY, 
           name TEXT, 
           price INTEGER, 
@@ -28,12 +28,15 @@ class DatabaseService {
     ''');
   }
 
-  // Future<int> insertData(Database database) async {
-  //   return await database.insert('items', {
-  //     'name': 'ydsffs',
-  //     'price': 200,
-  //     'date': DateFormat('d MMM, yyyy').format(DateTime.now()),
-  //     // 'date': '08 Aug, 2024'
-  //   });
-  // }
+  Future<int> insertData(
+      String description,
+      int price,
+      Database database,
+      ) async {
+    return await database.insert('items', {
+      'name': description,
+      'price': price,
+      'date': DateFormat('d MMM, yyyy').format(DateTime.now()),
+    });
+  }
 }
