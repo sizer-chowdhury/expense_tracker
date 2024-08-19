@@ -36,6 +36,7 @@ dependencies:
     path: packages/utilities
   fl_chart: ^0.68.0
 
+  dartz: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
