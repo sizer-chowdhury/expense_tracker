@@ -10,8 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/extensions/extensions.dart';
 
-import '../widget/button.dart';
-
 class ExpenseDetailsPage extends StatefulWidget {
   static const String path = "expense-details";
 
@@ -95,7 +93,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
 
           return ListView.builder(
             controller: _scrollController,
-            physics: const ClampingScrollPhysics(),
+            physics: ClampingScrollPhysics(),
             itemCount: expenses.length + 1,
             itemBuilder: (context, index) {
               if (index < expenses.length) {
@@ -186,17 +184,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             (addButtonSnapshot.data!)
-                ? GradientButton(
-                    text: 'Add more...',
-                    onPressed: () {
-                      _isAddButtonVisible.add(false);
-                      _scrollDown();
-                    },
-                    gradientColors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.tertiaryFixed
-                    ],
-                  )
+                ? _addButton(context)
                 : _addNewExpenseForm(),
           ],
         );
@@ -204,8 +192,19 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
     );
   }
 
+  Widget _addButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        _isAddButtonVisible.add(false);
+        _scrollDown();
+      },
+      style: _buttonStyle(),
+      child: const Text('Add'),
+    );
+  }
+
   void _scrollDown() {
-    if (_scrollController.hasClients) {
+    if(_scrollController.hasClients){
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent + 220.0,
         duration: const Duration(milliseconds: 1000),
@@ -238,23 +237,41 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   }
 
   Widget _saveButton(BuildContext context) {
-    return GradientButton(
-      text: 'Save',
-      onPressed: () {
-        _isAddButtonVisible.add(true);
-        _bloc.add(AddNewExpense(
-          description: title.text,
-          price: int.parse(price.text),
-          dateTime: widget.dateTime,
-        ));
-        _bloc.add(FetchExpenseEvent(date: widget.dateTime));
-        title.clear();
-        price.clear();
-      },
-      gradientColors: [
-        Theme.of(context).colorScheme.primary,
-        Theme.of(context).colorScheme.tertiaryFixed
-      ], // Optional: custom gradient colors
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: ElevatedButton(
+        onPressed: () {
+          _isAddButtonVisible.add(true);
+          _bloc.add(AddNewExpense(
+            description: title.text,
+            price: int.parse(price.text),
+            dateTime: widget.dateTime,
+          ));
+          _bloc.add(FetchExpenseEvent(date: widget.dateTime));
+          title.clear();
+          price.clear();
+        },
+        style: _buttonStyle(),
+        child: const Text('Save'),
+      ),
     );
   }
+
+  _buttonStyle() {
+    return ElevatedButton.styleFrom(
+      foregroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      shadowColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+      elevation: 10,
+      textStyle: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
 }
