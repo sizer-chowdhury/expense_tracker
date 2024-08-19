@@ -27,8 +27,12 @@ class _LandingPageState extends State<LandingPage> {
                     backgroundColor: WidgetStatePropertyAll(Colors.blue),
                   ),
                   onPressed: () {
-                    context.go("/${ExpenseDetailsPage.path}");
+                    //final selectedDate = DateTime.now();
+                    final dateString = "2025-08-20";
+                    print("format: $dateString");
+                    context.go("/${ExpenseDetailsPage.path}/$dateString");
                   },
+
                   child: const Text(
                     'item_details',
                     style: TextStyle(color: Colors.white),

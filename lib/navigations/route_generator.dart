@@ -24,9 +24,14 @@ class RouteGenerator {
       ),
       GoRoute(
         name: ExpenseDetailsPage.path,
-        path: "/${ExpenseDetailsPage.path}",
-        builder: (context, state) => const ExpenseDetailsPage(),
+        path: "/${ExpenseDetailsPage.path}/:date",
+        builder: (context, state) {
+          final dateString = state.pathParameters['date']!;
+          final date = DateTime.parse(dateString);
+          return ExpenseDetailsPage(dateTime: date);
+        },
       ),
+
       GoRoute(
         name: ItemListPage.path,
         path: "/${ItemListPage.path}",

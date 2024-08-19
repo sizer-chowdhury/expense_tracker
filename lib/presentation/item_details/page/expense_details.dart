@@ -70,7 +70,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   Widget _date(BuildContext context) {
     final theme = Theme.of(context);
     return Text(
-      DateTime.now().formattedDate(),
+      widget.dateTime.formattedDate(),
       style: theme.textTheme.headlineSmall?.copyWith(
         fontWeight: FontWeight.bold,
       ),
