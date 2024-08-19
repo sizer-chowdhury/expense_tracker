@@ -1,4 +1,4 @@
-import 'package:expense_tracker/data/item_list_data_source/insert_expense.dart';
+import 'package:expense_tracker/data/data_source/insert_expense.dart';
 
 class AddExpenseRepositoryImp implements AddNewExpenseRepository {
   @override
