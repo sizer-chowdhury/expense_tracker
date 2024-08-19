@@ -108,7 +108,7 @@ class _DashboardState extends State<Dashboard> {
               ),
               TextButton(
                 onPressed: () {
-                  context.push('/${AddExpensePage.path}');
+                  // context.push('/${AddExpensePage.path}');
                 },
                 child: Text('add expense'),
               ),
