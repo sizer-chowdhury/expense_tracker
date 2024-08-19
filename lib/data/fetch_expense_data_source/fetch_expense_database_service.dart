@@ -19,13 +19,32 @@ class FetchExpenseDatabaseService {
     );
   }
 
-  Future<List<Map<String, Object?>>> readData(Database database, String date) async {
-    return await database.rawQuery('''
+  // Future<List<Map<String, Object?>>> readData(
+  //     Database database, DateTime date) async {
+  //   String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+  //
+  //   var res = await database.rawQuery('''
+  //   SELECT *
+  //   FROM items
+  //   WHERE date(date) = ?
+  //   ORDER BY name
+  // ''', [formattedDate]);
+  //   print(res);
+  //   return res;
+  // }
+
+  Future<List<Map<String, Object?>>> readData(
+      Database database, DateTime date) async {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+
+    var res = await database.rawQuery('''
     SELECT * 
     FROM items
-    WHERE date = ?
-    ORDER BY name
-  ''', [date]);
+    WHERE date(date) = ?
+    ORDER BY id
+  ''', [formattedDate]);
+    print(res);
+    return res;
   }
 
 }
