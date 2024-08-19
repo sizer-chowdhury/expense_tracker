@@ -30,7 +30,6 @@ class _LandingPageState extends State<LandingPage> {
                     const dateString = "2025-08-20";
                     context.go("/${ExpenseDetailsPage.path}/$dateString");
                   },
-
                   child: const Text(
                     'item_details',
                     style: TextStyle(color: Colors.white),

@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -19,24 +18,31 @@ class DatabaseService {
     );
   }
 
-  Future<List<Map<String, Object?>>> readData(Database database) async {
+  Future<List<Map<String, Object?>>> readData(
+    Database database,
+    String reportFormat,
+  ) async {
     return await database.rawQuery('''
-      SELECT name, SUM(price) as price, date 
-      FROM items
-      GROUP BY date
-      ORDER BY date DESC
+      SELECT 
+        strftime('%Y-%m-%d', date) AS day,
+        SUM(price) AS total_price
+      FROM 
+        items
+      GROUP BY 
+        strftime('$reportFormat', date);
     ''');
   }
 
   Future<int> insertData(
-      String description,
-      int price,
-      Database database,
-      ) async {
+    String description,
+    int price,
+    Database database,
+    DateTime date,
+  ) async {
     return await database.insert('items', {
       'name': description,
       'price': price,
-      'date': DateFormat('d MMM, yyyy').format(DateTime.now()),
+      'date': date.toIso8601String(),
     });
   }
 }
