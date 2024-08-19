@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -41,7 +42,7 @@ class DatabaseService {
     return await database.insert('items', {
       'name': description,
       'price': price,
-      'date': DateTime.now().toIso8601String(),
+      'date': DateFormat('d MMM, yyyy').format(DateTime.now()),
     });
   }
 }

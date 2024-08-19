@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../item_details/page/expense_details.dart';
+import '../items_list/page/item_list_page.dart';
 
 class LandingPage extends StatefulWidget {
   static const String path = "landing";
@@ -32,7 +33,6 @@ class _LandingPageState extends State<LandingPage> {
                     print("format: $dateString");
                     context.go("/${ExpenseDetailsPage.path}/$dateString");
                   },
-
                   child: const Text(
                     'item_details',
                     style: TextStyle(color: Colors.white),
