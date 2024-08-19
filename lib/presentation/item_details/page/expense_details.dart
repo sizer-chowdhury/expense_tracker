@@ -84,7 +84,14 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         if (state is FetchExpenseSuccess) {
           final expenses = state.list;
           if (expenses == null || expenses.isEmpty) {
-            return const Center(child: Text('No expenses found.'));
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Center(child: Text('No expenses found.')),
+                const SizedBox(height: 30),
+                bottomItem(context),
+              ],
+            );
           }
 
           return ListView.builder(
