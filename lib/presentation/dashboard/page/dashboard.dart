@@ -10,9 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../item_details/page/expense_details.dart';
-import '../bloc/item_summary_bloc/item_summary_state.dart';
-
 enum GraphType { daily, monthly, yearly }
 
 class Dashboard extends StatefulWidget {
@@ -56,43 +53,40 @@ class _DashboardState extends State<Dashboard> {
 
     return Scaffold(
       appBar: myAppBar(context),
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       floatingActionButton: Stack(
         children: [
-          SizedBox(
-            width: screenWidth - 30,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-                elevation: const WidgetStatePropertyAll(5),
-                minimumSize: WidgetStatePropertyAll(
-                  Size(screenWidth, 75),
-                ),
-                backgroundColor: WidgetStatePropertyAll(
-                  Theme.of(context).colorScheme.primary,
-                ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ButtonStyle(
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.edit_calendar_rounded,
+              elevation: const WidgetStatePropertyAll(5),
+              minimumSize: WidgetStatePropertyAll(
+                Size(screenWidth, 75),
+              ),
+              backgroundColor: WidgetStatePropertyAll(
+                Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.calendar_month,
+                  color: Theme.of(context).colorScheme.surface,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  '10 jan, 2024',
+                  style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(width: 10),
-                  Text(
-                    '10 jan, 2024',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.surface,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           Positioned(
@@ -111,47 +105,41 @@ class _DashboardState extends State<Dashboard> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: BlocBuilder<GraphBloc, GraphState>(
-                    bloc: graphBloc,
-                    builder: (context, state) {
-                      if (state is GraphStateSuccess) {
-                        return Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(
-                                3,
-                                (index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: _selectGraph(
-                                      index,
-                                      state.graphType,
-                                      context,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            BarList(
-                              items: state.itemList,
-                              graphType: state.graphType,
-                            ),
-                          ],
-                        );
-                      } else if (state is GraphStateFailed) {
-                        return Text(state.errorMessage);
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    },
-                  ),
-                ),
+              BlocBuilder<GraphBloc, GraphState>(
+                bloc: graphBloc,
+                builder: (context, state) {
+                  if (state is GraphStateSuccess) {
+                    return Column(
+                      children: [
+                        BarList(
+                          items: state.itemList,
+                          graphType: state.graphType,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(
+                            3,
+                            (index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: _selectGraph(
+                                  index,
+                                  state.graphType,
+                                  context,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (state is GraphStateFailed) {
+                    return Text(state.errorMessage);
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
               ),
-              const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
                   context.push(
@@ -167,7 +155,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
                 child: Text(
-                  'See expense list',
+                  'See expenses list',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
                   ),
@@ -198,7 +186,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  SizedBox _selectGraph(
+  ElevatedButton _selectGraph(
     int index,
     GraphType selectedType,
     BuildContext context,
