@@ -1,9 +1,6 @@
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_state.dart';
-import 'package:expense_tracker/presentation/dashboard/bloc/item_summary_bloc/item_summary_bloc.dart';
-import 'package:expense_tracker/presentation/dashboard/bloc/item_summary_bloc/item_summary_event.dart';
-import 'package:expense_tracker/presentation/dashboard/widgets/summary_graph/summary_list.dart';
 import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:expense_tracker/presentation/dashboard/widgets/my_bar_chart/bar_list.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +21,6 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final GraphBloc graphBloc = GraphBloc();
-  final ItemSummaryBloc itemSummaryBloc = ItemSummaryBloc();
-
   DateTime selectedDate = DateTime.now();
 
   final List<GraphType> graphType = [
@@ -37,68 +32,18 @@ class _DashboardState extends State<Dashboard> {
   void dispose() {
     super.dispose();
     graphBloc.close();
-    itemSummaryBloc.close();
   }
 
   @override
   void initState() {
     super.initState();
     graphBloc.add(const GraphEvent(graphType: GraphType.daily));
-    itemSummaryBloc.add(ItemSummaryDrawEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: myAppBar(context),
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-      floatingActionButton: Stack(
-        children: [
-          ElevatedButton(
-            onPressed: () {},
-            style: ButtonStyle(
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              ),
-              elevation: const WidgetStatePropertyAll(5),
-              minimumSize: WidgetStatePropertyAll(
-                Size(screenWidth, 75),
-              ),
-              backgroundColor: WidgetStatePropertyAll(
-                Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.calendar_month,
-                  color: Theme.of(context).colorScheme.surface,
-                ),
-                SizedBox(width: 10),
-                Text(
-                  '10 jan, 2024',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.surface,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            right: 10,
-            top: 10,
-            child: FloatingActionButton(
-              onPressed: () {},
-              child: const Icon(Icons.add),
-            ),
-          ),
-        ],
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 15),
@@ -161,24 +106,12 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
-              BlocBuilder<ItemSummaryBloc, ItemSummaryState>(
-                bloc: itemSummaryBloc,
-                builder: (context, state) {
-                  if (state is ItemSummaryStateSuccess) {
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: SummaryList(items: state.itemSummary!),
-                      ),
-                    );
-                  } else if (state is ItemSummaryStateFailed) {
-                    print(state.errorMessage);
-                    return Text('failed');
-                  }
-                  return const CircularProgressIndicator();
+              TextButton(
+                onPressed: () {
+                  // context.push('/${AddExpensePage.path}');
                 },
-              )
+                child: Text('add expense'),
+              ),
             ],
           ),
         ),
@@ -191,39 +124,32 @@ class _DashboardState extends State<Dashboard> {
     GraphType selectedType,
     BuildContext context,
   ) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    return SizedBox(
-      height: screenWidth * .05,
-      width: screenWidth * .25,
-      child: ElevatedButton(
-        onPressed: () {
-          graphBloc.add(
-            GraphEvent(
-              graphType: graphType[index],
-            ),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: selectedType == graphType[index]
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.secondary,
-        ),
-        child: Text(
-          () {
-            switch (index) {
-              case 0:
-                return 'Daily';
-              case 1:
-                return 'Monthly';
-              default:
-                return 'Yearly';
-            }
-          }(),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.surface,
-            fontSize: screenWidth * .025,
+    return ElevatedButton(
+      onPressed: () {
+        graphBloc.add(
+          GraphEvent(
+            graphType: graphType[index],
           ),
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: selectedType == graphType[index]
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.secondary,
+      ),
+      child: Text(
+        () {
+          switch (index) {
+            case 0:
+              return 'Daily';
+            case 1:
+              return 'Monthly';
+            default:
+              return 'Yearly';
+          }
+        }(),
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.surface,
         ),
       ),
     );
