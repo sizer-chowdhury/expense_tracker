@@ -45,4 +45,17 @@ class DatabaseService {
       'date': DateFormat('d MMM, yyyy').format(DateTime.now()),
     });
   }
+
+  Future<List<Map<String, Object?>>> getItemSummaryReport(
+    Database database,
+  ) async {
+    var res = await database.rawQuery('''
+      SELECT 
+        name as category, sum(price) as cost
+      FROM
+        items
+      group by name
+    ''');
+    return res;
+  }
 }

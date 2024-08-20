@@ -28,8 +28,8 @@ class SingleBar extends StatelessWidget {
                 topRight: Radius.circular(5),
               ),
               color: Color.lerp(
+                Theme.of(context).colorScheme.primary,
                 Colors.purple,
-                Colors.blue,
                 singleEntity.price / mx,
               ),
             ),
