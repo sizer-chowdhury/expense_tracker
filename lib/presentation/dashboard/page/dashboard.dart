@@ -56,7 +56,6 @@ class _DashboardState extends State<Dashboard> {
 
     return Scaffold(
       appBar: myAppBar(context),
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       floatingActionButton: Stack(
         children: [
           SizedBox(
@@ -80,10 +79,10 @@ class _DashboardState extends State<Dashboard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.calendar_month,
+                    Icons.edit_calendar_rounded,
                     color: Theme.of(context).colorScheme.surface,
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Text(
                     '10 jan, 2024',
                     style: TextStyle(
