@@ -55,7 +55,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _date(context),
+              _datePriceOverView(context),
               Expanded(child: _expenseList(context)),
             ],
           ),
@@ -64,13 +64,100 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
     );
   }
 
-  Widget _date(BuildContext context) {
-    final theme = Theme.of(context);
-    return Text(
-      widget.dateTime.formattedDate(),
-      style: theme.textTheme.headlineSmall?.copyWith(
-        fontWeight: FontWeight.bold,
+  Widget _datePriceOverView(BuildContext context) {
+    return BlocBuilder<ExpenseDetailsBloc, ExpenseDetailsState>(
+        bloc: _bloc,
+        builder: (context, state) {
+          if (state is FetchExpenseSuccess) {
+            final totalPrice = state.totalPrice;
+            return _datePriceContainer(context, totalPrice);
+          } else if (state is FetchExpenseError) {
+            return Center(child: Text('Error: ${state.errorMessage}'));
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        });
+  }
+
+  Widget _datePriceContainer(BuildContext context, int? totalPrice) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return SizedBox(
+      height: height * 0.12,
+      child: Stack(
+        children: [
+          _insideContainer(height, width),
+          _outerContainer(height, width, totalPrice),
+        ],
       ),
+    );
+  }
+
+  Widget _insideContainer(double height, double width) {
+    return Container(
+      width: width,
+      height: height * 0.06,
+      decoration: _insideContainerDecoration(context),
+    );
+  }
+
+  BoxDecoration _insideContainerDecoration(BuildContext context) {
+    return BoxDecoration(
+      color: Theme.of(context).colorScheme.primary.withAlpha(100),
+      gradient: LinearGradient(
+        colors: [
+          Theme.of(context).colorScheme.primary.withAlpha(150),
+          Theme.of(context).colorScheme.primary.withAlpha(100),
+        ],
+      ),
+      borderRadius: const BorderRadius.only(
+        bottomLeft: Radius.circular(20),
+        bottomRight: Radius.circular(20),
+      ),
+    );
+  }
+
+  Widget _outerContainer(double height, double width, int? totalPrice) {
+    return Positioned(
+      top: height * 0.01,
+      left: width * 0.18,
+      child: Container(
+        height: height * 0.1,
+        width: width * 0.6,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: _datePriceColumn(totalPrice),
+        ),
+      ),
+    );
+  }
+
+  Widget _datePriceColumn(int? totalPrice) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Date: ${widget.dateTime.formattedDate()}",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          "Total Price: $totalPrice",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.tertiaryFixed,
+          ),
+        ),
+      ],
     );
   }
 
@@ -93,7 +180,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
 
           return ListView.builder(
             controller: _scrollController,
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             itemCount: expenses.length + 1,
             itemBuilder: (context, index) {
               if (index < expenses.length) {
@@ -204,7 +291,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   }
 
   void _scrollDown() {
-    if(_scrollController.hasClients){
+    if (_scrollController.hasClients) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent + 220.0,
         duration: const Duration(milliseconds: 1000),
@@ -273,5 +360,4 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
       ),
     );
   }
-
 }

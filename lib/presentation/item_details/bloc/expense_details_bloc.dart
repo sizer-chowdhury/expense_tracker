@@ -25,7 +25,8 @@ class ExpenseDetailsBloc
     );
   }
 
-  Future<void> _deleteExpense(DeleteExpense event, Emitter<ExpenseDetailsState> emit) async {
+  Future<void> _deleteExpense(
+      DeleteExpense event, Emitter<ExpenseDetailsState> emit) async {
     await sl<DeleteExpenseUseCase>().deleteItem(event.id);
   }
 
@@ -35,7 +36,10 @@ class ExpenseDetailsBloc
 
     result.fold(
       (error) => emit(FetchExpenseError(errorMessage: error)),
-      (expenses) => emit(FetchExpenseSuccess(list: expenses)),
+      (expenses) {
+        final totalPrice = expenses.fold(0, (sum, item) => sum + item.price);
+        emit(FetchExpenseSuccess(list: expenses, totalPrice: totalPrice));
+      },
     );
   }
 }

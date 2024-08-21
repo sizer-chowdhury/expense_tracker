@@ -21,9 +21,13 @@ class FetchExpenseError extends ExpenseDetailsState {
 
 class FetchExpenseSuccess extends ExpenseDetailsState {
   final List<ExpenseDetailsEntity>? list;
+  final int? totalPrice;
 
-  const FetchExpenseSuccess({required this.list});
+  const FetchExpenseSuccess({
+    required this.list,
+    this.totalPrice = 0,
+  });
 
   @override
-  List<Object?> get props => [list];
+  List<Object?> get props => [list, totalPrice];
 }
