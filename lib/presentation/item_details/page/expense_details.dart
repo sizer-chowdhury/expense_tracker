@@ -128,6 +128,10 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
           borderRadius: BorderRadius.circular(10),
+          boxShadow: const [BoxShadow(
+            blurRadius: 2,
+            spreadRadius: 1,
+          )],
         ),
         child: Center(
           child: _datePriceColumn(totalPrice),
