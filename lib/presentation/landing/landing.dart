@@ -1,3 +1,4 @@
+import 'package:expense_tracker/presentation/dashboard/page/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -27,7 +28,10 @@ class _LandingPageState extends State<LandingPage> {
                     backgroundColor: WidgetStatePropertyAll(Colors.blue),
                   ),
                   onPressed: () {
-                    context.go("/${ExpenseDetailsPage.path}");
+                    //final selectedDate = DateTime.now();
+                    final dateString = "2025-08-20";
+                    print("format: $dateString");
+                    context.go("/${ExpenseDetailsPage.path}/$dateString");
                   },
                   child: const Text(
                     'item_details',
@@ -40,13 +44,14 @@ class _LandingPageState extends State<LandingPage> {
                     backgroundColor: WidgetStatePropertyAll(Colors.blue),
                   ),
                   onPressed: () {
-                    context.go('/${ItemListPage.path}');
+                    context.go('/${Dashboard.path}');
                   },
                   child: const Text(
-                    'item lists',
+                    'Dashboard',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
