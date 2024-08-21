@@ -6,6 +6,8 @@ import 'package:expense_tracker/presentation/dashboard/widgets/my_bar_chart/bar_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:utilities/utilities.dart';
 
 enum GraphType { daily, monthly, yearly }
 
@@ -44,7 +46,8 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
+    final BehaviorSubject<String> _currentDate =
+        BehaviorSubject<String>.seeded(DateTime.now().formattedDate());
     return Scaffold(
       appBar: myAppBar(context),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
@@ -63,6 +66,7 @@ class _DashboardState extends State<Dashboard> {
 
                 if (selectedDate != null) {
                   print("Selected Date: $selectedDate");
+                  _currentDate.add(selectedDate.formattedDate());
                 }
               },
               style: ButtonStyle(
@@ -87,13 +91,18 @@ class _DashboardState extends State<Dashboard> {
                     color: Theme.of(context).colorScheme.surface,
                   ),
                   const SizedBox(width: 10),
-                  Text(
-                    '10 jan, 2024',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.surface,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  StreamBuilder<String>(
+                    stream: _currentDate,
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.data!,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.surface,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
