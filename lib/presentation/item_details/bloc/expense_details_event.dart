@@ -10,14 +10,25 @@ class ExpenseDetailsEvent extends Equatable {
 class AddNewExpense extends ExpenseDetailsEvent {
   final String description;
   final int price;
+  final DateTime dateTime;
 
   const AddNewExpense({
     required this.description,
     required this.price,
+    required this.dateTime,
   });
 
   @override
   List<Object?> get props => [description, price];
+}
+
+class DeleteExpense extends ExpenseDetailsEvent {
+  final int id;
+
+  const DeleteExpense({required this.id});
+
+  @override
+  List<Object?> get props => [id];
 }
 
 class FetchExpenseEvent extends ExpenseDetailsEvent {

@@ -38,11 +38,12 @@ class DatabaseService {
     String description,
     int price,
     Database database,
+    DateTime date,
   ) async {
     return await database.insert('items', {
       'name': description,
       'price': price,
-      'date': DateFormat('d MMM, yyyy').format(DateTime.now()),
+      'date': date.toIso8601String(),
     });
   }
 }

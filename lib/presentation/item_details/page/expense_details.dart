@@ -48,10 +48,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Expense Details"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -84,11 +81,19 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         if (state is FetchExpenseSuccess) {
           final expenses = state.list;
           if (expenses == null || expenses.isEmpty) {
-            return const Center(child: Text('No expenses found.'));
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Center(child: Text('No expenses found.')),
+                const SizedBox(height: 30),
+                bottomItem(context),
+              ],
+            );
           }
 
           return ListView.builder(
             controller: _scrollController,
+            physics: ClampingScrollPhysics(),
             itemCount: expenses.length + 1,
             itemBuilder: (context, index) {
               if (index < expenses.length) {
@@ -144,11 +149,11 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           fontWeight: FontWeight.bold,
         ),
       ),
-      trailing: _trailingItem(expense.price, theme),
+      trailing: _trailingItem(expense.price, expense.id, theme),
     );
   }
 
-  _trailingItem(int price, ThemeData theme) {
+  _trailingItem(int price, int id, ThemeData theme) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -161,7 +166,10 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         ),
         IconButton(
           icon: const Icon(Icons.delete_outline_outlined),
-          onPressed: () {},
+          onPressed: () {
+            _bloc.add(DeleteExpense(id: id));
+            _bloc.add(FetchExpenseEvent(date: widget.dateTime));
+          },
         ),
       ],
     );
@@ -196,11 +204,13 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   }
 
   void _scrollDown() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent + 200.0,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
+    if(_scrollController.hasClients){
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent + 220.0,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   Widget _addNewExpenseForm() {
@@ -235,8 +245,11 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           _bloc.add(AddNewExpense(
             description: title.text,
             price: int.parse(price.text),
+            dateTime: widget.dateTime,
           ));
           _bloc.add(FetchExpenseEvent(date: widget.dateTime));
+          title.clear();
+          price.clear();
         },
         style: _buttonStyle(),
         child: const Text('Save'),
@@ -249,9 +262,16 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
       foregroundColor: Colors.white,
       backgroundColor: Theme.of(context).colorScheme.primary,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      shadowColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+      elevation: 10,
+      textStyle: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
     );
   }
+
 }

@@ -1,4 +1,3 @@
-
 import 'package:expense_tracker/domain/repository/add_new_expense_repository.dart';
 
 class AddNewExpenseUseCase {
@@ -7,7 +6,9 @@ class AddNewExpenseUseCase {
   AddNewExpenseUseCase(this._addNewExpenseRepo);
 
   Future<String?> addNewExpense(
-      {required String description, required int price}) async{
-    return await _addNewExpenseRepo.addNewExpense(description, price);
+      {required String description,
+      required int price,
+      required DateTime dateTime}) async {
+    return await _addNewExpenseRepo.addNewExpense(description, price, dateTime);
   }
 }
