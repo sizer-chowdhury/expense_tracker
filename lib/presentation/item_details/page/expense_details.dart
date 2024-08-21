@@ -311,7 +311,8 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
                     },
                     gradientColors: [
                       Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.tertiaryFixed
+                      Theme.of(context).colorScheme.tertiaryFixed,
+                      Theme.of(context).colorScheme.onPrimary,
                     ],
                   )
                 : _addNewExpenseForm(),
