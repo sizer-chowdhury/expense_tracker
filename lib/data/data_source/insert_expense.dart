@@ -11,9 +11,10 @@ class InsertExpense {
     String path = await getDatabasesPath();
     // const String path = '/Users/bs00849/Desktop/Dev/db';
     const String dbName = 'items.db';
+    const String tableName = 'items';
     Database database;
     try {
-      database = await DatabaseService().openDataBase(path, dbName);
+      database = await DatabaseService().openDataBase(path, dbName, tableName);
     } on Exception catch (e) {
       print('error on open database');
       return e.toString();
@@ -22,8 +23,9 @@ class InsertExpense {
       await DatabaseService().insertData(
         description,
         price,
-        database,
         date,
+        tableName,
+        database,
       );
     } on Exception catch (e) {
       print('error on insert data');

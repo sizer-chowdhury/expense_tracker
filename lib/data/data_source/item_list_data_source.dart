@@ -4,12 +4,13 @@ import 'package:sqflite/sqflite.dart';
 
 class ItemListDataSource {
   Future<(List<ItemModel>?, String?)> readItems() async {
-    // String path = await getDatabasesPath();
-    String path = '/Users/bs00849/Desktop/Dev/db';
+    String path = await getDatabasesPath();
+    // String path = '/Users/bs00849/Desktop/Dev/db';
     String dbName = 'items.db';
+    String tableName = 'items';
     Database database;
     try {
-      database = await DatabaseService().openDataBase(path, dbName);
+      database = await DatabaseService().openDataBase(path, dbName, tableName);
     } on Exception catch (e) {
       print('error on open database');
       return (null, e.toString());

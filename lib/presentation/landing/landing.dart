@@ -29,7 +29,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   onPressed: () {
                     const dateString = "2024-08-19";
-                    context.go("/${ExpenseDetailsPage.path}/$dateString");
+                    context.push("/${ExpenseDetailsPage.path}/$dateString");
                   },
                   child: const Text(
                     'item_details',
@@ -42,7 +42,7 @@ class _LandingPageState extends State<LandingPage> {
                     backgroundColor: WidgetStatePropertyAll(Colors.blue),
                   ),
                   onPressed: () {
-                    context.go('/${Dashboard.path}');
+                    context.push('/${Dashboard.path}');
                   },
                   child: const Text(
                     'Dashboard',
