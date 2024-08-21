@@ -8,6 +8,7 @@ import 'package:expense_tracker/presentation/item_details/widget/custom_textfiel
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/extensions/extensions.dart';
 
@@ -128,10 +129,12 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
           borderRadius: BorderRadius.circular(10),
-          boxShadow: const [BoxShadow(
-            blurRadius: 2,
-            spreadRadius: 1,
-          )],
+          boxShadow: const [
+            BoxShadow(
+              blurRadius: 2,
+              spreadRadius: 1,
+            )
+          ],
         ),
         child: Center(
           child: _datePriceColumn(totalPrice),
@@ -222,12 +225,29 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
 
   Widget card(
       BuildContext context, ThemeData theme, ExpenseDetailsEntity expense) {
-    return Card(
-      elevation: 2.5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+    return Slidable(
+      key: Key('$expense'),
+      endActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (context) {
+              _bloc.add(DeleteExpense(id: expense.id));
+              _bloc.add(FetchExpenseEvent(date: widget.dateTime));
+            },
+            icon: Icons.delete_outline_outlined,
+            backgroundColor: theme.colorScheme.tertiaryFixed,
+            borderRadius: BorderRadius.circular(12),
+          )
+        ],
       ),
-      child: _cardItem(expense, theme),
+      child: Card(
+        elevation: 2.5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: _cardItem(expense, theme),
+      ),
     );
   }
 
