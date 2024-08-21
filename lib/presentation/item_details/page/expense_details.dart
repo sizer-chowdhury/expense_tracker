@@ -98,18 +98,17 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   Widget _insideContainer(double height, double width) {
     return Container(
       width: width,
-      height: height * 0.06,
-      decoration: _insideContainerDecoration(context),
+      height: height * 0.07,
+      decoration: _innerContainerDecoration(context),
     );
   }
 
-  BoxDecoration _insideContainerDecoration(BuildContext context) {
+  BoxDecoration _innerContainerDecoration(BuildContext context) {
     return BoxDecoration(
-      color: Theme.of(context).colorScheme.primary.withAlpha(100),
       gradient: LinearGradient(
         colors: [
-          Theme.of(context).colorScheme.primary.withAlpha(150),
-          Theme.of(context).colorScheme.primary.withAlpha(100),
+          Theme.of(context).colorScheme.primary.withAlpha(30),
+          Theme.of(context).colorScheme.tertiaryFixed.withAlpha(120),
         ],
       ),
       borderRadius: const BorderRadius.only(
@@ -127,8 +126,14 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         height: height * 0.1,
         width: width * 0.6,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.9),
           borderRadius: BorderRadius.circular(10),
+          gradient: LinearGradient(
+            colors: [
+              Theme.of(context).colorScheme.secondary.withAlpha(100),
+              Theme.of(context).colorScheme.tertiaryFixed.withAlpha(150),
+            ],
+          ),
           boxShadow: const [
             BoxShadow(
               blurRadius: 2,
@@ -236,8 +241,10 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
               _bloc.add(FetchExpenseEvent(date: widget.dateTime));
             },
             icon: Icons.delete_outline_outlined,
-            backgroundColor: theme.colorScheme.tertiaryFixed,
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: Colors.white,
             borderRadius: BorderRadius.circular(12),
+
           )
         ],
       ),
