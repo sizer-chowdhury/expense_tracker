@@ -19,6 +19,10 @@ class SingleBar extends StatelessWidget {
     return SizedBox(
       child: Column(
         children: [
+          Text(
+            '${singleEntity.price}',
+            style: const TextStyle(fontSize: 10),
+          ),
           Container(
             height: 150 * singleEntity.price / mx,
             width: 30,
