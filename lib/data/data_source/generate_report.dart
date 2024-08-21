@@ -6,7 +6,7 @@ import 'database_service.dart';
 class GenerateReportDataSource {
   Future<(List<ItemModel>?, String?)> readDailyItems() async {
     String path = await getDatabasesPath();
-    //const String path = '/Users/bs00849/Desktop/Dev/db';
+    // const String path = '/Users/bs00849/Desktop/Dev/db';
     const String dbName = 'items.db';
     const String reportFormat = '%Y-%m-%d';
     Database database;
@@ -30,8 +30,8 @@ class GenerateReportDataSource {
   }
 
   Future<(List<ItemModel>?, String?)> readMonthlyItems() async {
-    // String path = await getDatabasesPath();
-    const String path = '/Users/bs00849/Desktop/Dev/db';
+    String path = await getDatabasesPath();
+    // const String path = '/Users/bs00849/Desktop/Dev/db';
     const String dbName = 'items.db';
     const String reportFormat = '%Y-%m';
     Database database;
@@ -54,8 +54,8 @@ class GenerateReportDataSource {
   }
 
   Future<(List<ItemModel>?, String?)> readYearlyItems() async {
-    // String path = await getDatabasesPath();
-    const String path = '/Users/bs00849/Desktop/Dev/db';
+    String path = await getDatabasesPath();
+    // const String path = '/Users/bs00849/Desktop/Dev/db';
     const String dbName = 'items.db';
     const String reportFormat = '%Y';
     Database database;
@@ -72,7 +72,7 @@ class GenerateReportDataSource {
       await database.close();
       return (list, null);
     } on Exception catch (e) {
-      print('Error on monthly data');
+      print('Error on yearly data');
       return (null, e.toString());
     }
   }

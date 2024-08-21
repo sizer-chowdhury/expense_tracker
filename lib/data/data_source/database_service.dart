@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -24,7 +25,7 @@ class DatabaseService {
   ) async {
     return await database.rawQuery('''
       SELECT 
-        strftime('%Y-%m-%d', date) AS day,
+        strftime('$reportFormat', date) AS day,
         SUM(price) AS total_price
       FROM 
         items

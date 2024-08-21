@@ -6,8 +6,8 @@ import 'package:expense_tracker/presentation/dashboard/widgets/my_bar_chart/bar_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../item_details/page/expense_details.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:utilities/utilities.dart';
 
 enum GraphType { daily, monthly, yearly }
 
@@ -23,6 +23,8 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final GraphBloc graphBloc = GraphBloc();
+  final BehaviorSubject<String> _currentDate =
+      BehaviorSubject<String>.seeded(DateTime.now().formattedDate());
 
   DateTime selectedDate = DateTime.now();
 
@@ -35,6 +37,7 @@ class _DashboardState extends State<Dashboard> {
   void dispose() {
     super.dispose();
     graphBloc.close();
+    _currentDate.close();
   }
 
   @override
@@ -45,14 +48,76 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: myAppBar(context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          String dateString = DateTime.now().toIso8601String();
-          context.push("/${ExpenseDetailsPage.path}/$dateString");
-        },
-        child: const Icon(Icons.add),
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      floatingActionButton: Stack(
+        children: [
+          SizedBox(
+            width: screenWidth - 30,
+            child: ElevatedButton(
+              onPressed: () async {
+                DateTime? selectedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
+                );
+
+                if (selectedDate != null) {
+                  _currentDate.add(selectedDate.formattedDate());
+                }
+              },
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                elevation: const WidgetStatePropertyAll(5),
+                minimumSize: WidgetStatePropertyAll(
+                  Size(screenWidth, 75),
+                ),
+                backgroundColor: WidgetStatePropertyAll(
+                  Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.edit_calendar_outlined,
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
+                  const SizedBox(width: 10),
+                  StreamBuilder<String>(
+                    stream: _currentDate,
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.data ?? 'select a date',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.surface,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            right: 10,
+            top: 10,
+            child: FloatingActionButton(
+              onPressed: () {},
+              child: const Icon(Icons.add),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -60,41 +125,47 @@ class _DashboardState extends State<Dashboard> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              BlocBuilder<GraphBloc, GraphState>(
-                bloc: graphBloc,
-                builder: (context, state) {
-                  if (state is GraphStateSuccess) {
-                    return Column(
-                      children: [
-                        BarList(
-                          items: state.itemList,
-                          graphType: state.graphType,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(
-                            3,
-                            (index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: _selectGraph(
-                                  index,
-                                  state.graphType,
-                                  context,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  } else if (state is GraphStateFailed) {
-                    return Text(state.errorMessage);
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: BlocBuilder<GraphBloc, GraphState>(
+                    bloc: graphBloc,
+                    builder: (context, state) {
+                      if (state is GraphStateSuccess) {
+                        return Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                3,
+                                (index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: _selectGraph(
+                                      index,
+                                      state.graphType,
+                                      context,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            BarList(
+                              items: state.itemList,
+                              graphType: state.graphType,
+                            ),
+                          ],
+                        );
+                      } else if (state is GraphStateFailed) {
+                        return Text(state.errorMessage);
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                ),
               ),
+              const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
                   context.push(
@@ -110,7 +181,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
                 child: Text(
-                  'See expenses list',
+                  'See expense list',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
                   ),
@@ -123,37 +194,44 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  ElevatedButton _selectGraph(
+  SizedBox _selectGraph(
     int index,
     GraphType selectedType,
     BuildContext context,
   ) {
-    return ElevatedButton(
-      onPressed: () {
-        graphBloc.add(
-          GraphEvent(
-            graphType: graphType[index],
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return SizedBox(
+      height: screenWidth * .05,
+      width: screenWidth * .25,
+      child: ElevatedButton(
+        onPressed: () {
+          graphBloc.add(
+            GraphEvent(
+              graphType: graphType[index],
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: selectedType == graphType[index]
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.secondary,
+        ),
+        child: Text(
+          () {
+            switch (index) {
+              case 0:
+                return 'Daily';
+              case 1:
+                return 'Monthly';
+              default:
+                return 'Yearly';
+            }
+          }(),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.surface,
+            fontSize: screenWidth * .025,
           ),
-        );
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: selectedType == graphType[index]
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.secondary,
-      ),
-      child: Text(
-        () {
-          switch (index) {
-            case 0:
-              return 'Daily';
-            case 1:
-              return 'Monthly';
-            default:
-              return 'Yearly';
-          }
-        }(),
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.surface,
         ),
       ),
     );

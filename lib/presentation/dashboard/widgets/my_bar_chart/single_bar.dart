@@ -21,10 +21,7 @@ class SingleBar extends StatelessWidget {
         children: [
           Text(
             '${singleEntity.price}',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontSize: 10,
-            ),
+            style: TextStyle(fontSize: 10),
           ),
           Container(
             height: 150 * singleEntity.price / mx,
@@ -96,7 +93,7 @@ class SingleBar extends StatelessWidget {
   RichText getYearText(String year, BuildContext context) {
     return RichText(
       text: TextSpan(
-        text: year.substring(0, 4),
+        text: year,
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
