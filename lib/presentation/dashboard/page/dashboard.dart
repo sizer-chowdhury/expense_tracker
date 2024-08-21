@@ -23,6 +23,8 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final GraphBloc graphBloc = GraphBloc();
+  final BehaviorSubject<String> _currentDate =
+      BehaviorSubject<String>.seeded(DateTime.now().formattedDate());
 
   DateTime selectedDate = DateTime.now();
 
@@ -35,6 +37,7 @@ class _DashboardState extends State<Dashboard> {
   void dispose() {
     super.dispose();
     graphBloc.close();
+    _currentDate.close();
   }
 
   @override
@@ -46,8 +49,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final BehaviorSubject<String> _currentDate =
-        BehaviorSubject<String>.seeded(DateTime.now().formattedDate());
+
     return Scaffold(
       appBar: myAppBar(context),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
@@ -65,7 +67,6 @@ class _DashboardState extends State<Dashboard> {
                 );
 
                 if (selectedDate != null) {
-                  print("Selected Date: $selectedDate");
                   _currentDate.add(selectedDate.formattedDate());
                 }
               },
@@ -87,7 +88,7 @@ class _DashboardState extends State<Dashboard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.calendar_month,
+                    Icons.edit_calendar_outlined,
                     color: Theme.of(context).colorScheme.surface,
                   ),
                   const SizedBox(width: 10),
@@ -95,7 +96,7 @@ class _DashboardState extends State<Dashboard> {
                     stream: _currentDate,
                     builder: (context, snapshot) {
                       return Text(
-                        snapshot.data!,
+                        snapshot.data ?? 'select a date',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.surface,
                           fontSize: 20,
@@ -186,28 +187,6 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
-
-              // BlocBuilder<ItemSummaryBloc, ItemSummaryState>(
-              //   bloc: itemSummaryBloc,
-              //   builder: (context, state) {
-              //     if (state is ItemSummaryStateSuccess) {
-              //       return SizedBox(
-              //         height: screenWidth / 1.5,
-              //         child: Card(
-              //           child: Padding(
-              //             padding: const EdgeInsets.all(10.0),
-              //             child: SummaryList(items: state.itemSummary!),
-              //           ),
-              //         ),
-              //       );
-              //     } else if (state is ItemSummaryStateFailed) {
-              //       print(state.errorMessage);
-              //       return Text('failed');
-              //     }
-              //     return const CircularProgressIndicator();
-              //   },
-              // )
             ],
           ),
         ),
