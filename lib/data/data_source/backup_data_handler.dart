@@ -7,8 +7,8 @@ import 'database_service.dart';
 
 class BackupDataHandler {
   Future<void> getBackupData() async {
-    // String path = await getDatabasesPath();
-    const String path = '/Users/bs00849/Desktop/Dev/db';
+    String path = await getDatabasesPath();
+    // const String path = '/Users/bs00849/Desktop/Dev/db';
     const String dbName = 'items.db';
     const String tableName = 'items';
     Database database;
@@ -27,8 +27,8 @@ class BackupDataHandler {
   }
 
   Future<void> restoreBackupData() async {
-    // String path = await getDatabasesPath();
-    const String path = '/Users/bs00849/Desktop/Dev/db';
+    String path = await getDatabasesPath();
+    // const String path = '/Users/bs00849/Desktop/Dev/db';
     const String dbName = 'items.db';
     const String tableName = 'items';
     Database database;
