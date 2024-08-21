@@ -1,3 +1,4 @@
+import 'package:expense_tracker/domain/use_case/backup_data_use_case.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_state.dart';
@@ -8,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/utilities.dart';
+
+import '../../../config/service_locator.dart';
 
 enum GraphType { daily, monthly, yearly }
 
@@ -57,57 +60,7 @@ class _DashboardState extends State<Dashboard> {
         children: [
           SizedBox(
             width: screenWidth - 30,
-            child: ElevatedButton(
-              onPressed: () async {
-                DateTime? selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2100),
-                );
-
-                if (selectedDate != null) {
-                  _currentDate.add(selectedDate.formattedDate());
-                }
-              },
-              style: ButtonStyle(
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                elevation: const WidgetStatePropertyAll(5),
-                minimumSize: WidgetStatePropertyAll(
-                  Size(screenWidth, 75),
-                ),
-                backgroundColor: WidgetStatePropertyAll(
-                  Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.edit_calendar_outlined,
-                    color: Theme.of(context).colorScheme.surface,
-                  ),
-                  const SizedBox(width: 10),
-                  StreamBuilder<String>(
-                    stream: _currentDate,
-                    builder: (context, snapshot) {
-                      return Text(
-                        snapshot.data ?? 'select a date',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.surface,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
+            child: calendarButton(context, screenWidth),
           ),
           Positioned(
             right: 10,
@@ -187,9 +140,81 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
+              IconButton(
+                onPressed: () {
+                  sl<BackupDataUseCase>().getBackupData();
+                },
+                icon: Icon(
+                  Icons.download,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  sl<BackupDataUseCase>().restoreBackupData();
+                },
+                icon: Icon(
+                  Icons.backup,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  ElevatedButton calendarButton(BuildContext context, double screenWidth) {
+    return ElevatedButton(
+      onPressed: () async {
+        DateTime? selectedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2100),
+        );
+
+        if (selectedDate != null) {
+          _currentDate.add(selectedDate.formattedDate());
+        }
+      },
+      style: ButtonStyle(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        elevation: const WidgetStatePropertyAll(5),
+        minimumSize: WidgetStatePropertyAll(
+          Size(screenWidth, 75),
+        ),
+        backgroundColor: WidgetStatePropertyAll(
+          Theme.of(context).colorScheme.primary,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.edit_calendar_outlined,
+            color: Theme.of(context).colorScheme.surface,
+          ),
+          const SizedBox(width: 10),
+          StreamBuilder<String>(
+            stream: _currentDate,
+            builder: (context, snapshot) {
+              return Text(
+                snapshot.data ?? 'select a date',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.surface,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

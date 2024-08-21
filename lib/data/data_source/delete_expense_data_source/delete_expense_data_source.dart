@@ -3,7 +3,9 @@ import 'package:sqflite/sqflite.dart';
 
 class DeleteExpenseDataSource {
   Future<void> deleteItem(int id) async {
-    String path = await getDatabasesPath();
+    // String path = await getDatabasesPath();
+    const String path = '/Users/bs00849/Desktop/Dev/db';
+
     String dbName = 'items.db';
     Database database;
 

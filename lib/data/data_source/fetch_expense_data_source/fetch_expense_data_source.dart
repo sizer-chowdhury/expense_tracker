@@ -7,7 +7,9 @@ import 'fetch_expense_database_service.dart';
 class FetchExpenseDataSource {
   Future<Either<String, List<ExpenseDetailsModel>>> readItems(
       DateTime date) async {
-    String path = await getDatabasesPath();
+    // String path = await getDatabasesPath();
+    const String path = '/Users/bs00849/Desktop/Dev/db';
+
     String dbName = 'items.db';
     Database database;
     try {
