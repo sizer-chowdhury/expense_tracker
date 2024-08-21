@@ -21,7 +21,7 @@ class SingleBar extends StatelessWidget {
         children: [
           Text(
             '${singleEntity.price}',
-            style: const TextStyle(fontSize: 10),
+            style: TextStyle(fontSize: 10),
           ),
           Container(
             height: 150 * singleEntity.price / mx,
