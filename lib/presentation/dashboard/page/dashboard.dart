@@ -1,6 +1,7 @@
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_state.dart';
+import 'package:expense_tracker/presentation/dashboard/widgets/line_graph/line_graph.dart';
 import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:expense_tracker/presentation/dashboard/widgets/my_bar_chart/bar_list.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +10,15 @@ import 'package:go_router/go_router.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/utilities.dart';
 
+import '../../item_details/page/expense_details.dart';
+
 enum GraphType { daily, monthly, yearly }
 
 class Dashboard extends StatefulWidget {
   const Dashboard({
     super.key,
   });
+
   static const String path = 'dashboard';
 
   @override
@@ -33,6 +37,7 @@ class _DashboardState extends State<Dashboard> {
     GraphType.monthly,
     GraphType.yearly,
   ];
+
   @override
   void dispose() {
     super.dispose();
@@ -68,6 +73,7 @@ class _DashboardState extends State<Dashboard> {
 
                 if (selectedDate != null) {
                   _currentDate.add(selectedDate.formattedDate());
+                  context.go("/${ExpenseDetailsPage.path}/$selectedDate");
                 }
               },
               style: ButtonStyle(
@@ -155,6 +161,27 @@ class _DashboardState extends State<Dashboard> {
                               graphType: state.graphType,
                             ),
                           ],
+                        );
+                      } else if (state is GraphStateFailed) {
+                        return Text(state.errorMessage);
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: BlocBuilder<GraphBloc, GraphState>(
+                    bloc: graphBloc,
+                    builder: (context, state) {
+                      if (state is GraphStateSuccess) {
+                        return LineGraph(
+                          items: state.itemList,
+                          graphType: state.graphType,
                         );
                       } else if (state is GraphStateFailed) {
                         return Text(state.errorMessage);

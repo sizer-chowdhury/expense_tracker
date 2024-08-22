@@ -9,8 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/extensions/extensions.dart';
+
+import '../../dashboard/page/dashboard.dart';
 
 class ExpenseDetailsPage extends StatefulWidget {
   static const String path = "expense-details";
@@ -50,7 +53,14 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            context.go('/${Dashboard.path}');
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -244,7 +254,6 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
             backgroundColor: theme.colorScheme.primary,
             foregroundColor: Colors.white,
             borderRadius: BorderRadius.circular(12),
-
           )
         ],
       ),
