@@ -7,6 +7,7 @@ import 'package:expense_tracker/presentation/dashboard/widgets/my_bar_chart/bar_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/utilities.dart';
 
@@ -73,7 +74,6 @@ class _DashboardState extends State<Dashboard> {
 
                 if (selectedDate != null) {
                   _currentDate.add(selectedDate.formattedDate());
-                  context.go("/${ExpenseDetailsPage.path}/$selectedDate");
                 }
               },
               style: ButtonStyle(
@@ -119,7 +119,14 @@ class _DashboardState extends State<Dashboard> {
             right: 10,
             top: 10,
             child: FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                DateTime parsedDate =
+                    DateFormat('d MMM, yyyy').parse(_currentDate.value);
+                String formattedDate =
+                    DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(parsedDate);
+
+                context.go("/${ExpenseDetailsPage.path}/$formattedDate");
+              },
               child: const Icon(Icons.add),
             ),
           ),
@@ -129,6 +136,7 @@ class _DashboardState extends State<Dashboard> {
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 15),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const SizedBox(height: 10),
               Card(
@@ -200,17 +208,28 @@ class _DashboardState extends State<Dashboard> {
                   );
                 },
                 style: ButtonStyle(
-                  minimumSize: const WidgetStatePropertyAll(
-                    Size(double.infinity, 15),
+                  padding: WidgetStateProperty.all(
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                   ),
-                  backgroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.primary,
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                      side: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 3,
+                      ),
+                    ),
+                  ),
+                  backgroundColor: WidgetStateProperty.all(
+                    Theme.of(context).colorScheme.surface,
                   ),
                 ),
                 child: Text(
-                  'See expense list',
+                  'View Details',
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
               ),
