@@ -18,11 +18,28 @@ class LineGraph extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
-        padding: const EdgeInsets.only(top: 15,bottom: 5,left: 15),
-        child: CustomPaint(
-          size: Size(items.length * 200.0, 200),
-          painter: LineGraphPainter(items, graphType),
-        ),
+        padding: const EdgeInsets.only(top: 15, bottom: 5, left: 15),
+        child: items.isEmpty
+            ? SizedBox(
+                height: 200,
+                width: 400,
+                child: Padding(
+                  padding: const EdgeInsets.all(80.0),
+                  child: Text(
+                    'No data available to view',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              )
+            : CustomPaint(
+                size:
+                    Size((items.length < 2 ? 400 : items.length * 200.0), 200),
+                painter: LineGraphPainter(items, graphType),
+              ),
       ),
     );
   }

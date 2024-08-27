@@ -91,7 +91,7 @@ class _MyItemsState extends State<MyItems> with SingleTickerProviderStateMixin {
         opacity: _controller.value,
         child: GestureDetector(
           onDoubleTap: (){
-            context.push("/${ExpenseDetailsPage.path}/${item.date}");
+            context.go("/${ExpenseDetailsPage.path}/${item.date}");
           },
           child: SingleItem(
             item: item,
