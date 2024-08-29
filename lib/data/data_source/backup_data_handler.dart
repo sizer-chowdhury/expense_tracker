@@ -3,23 +3,23 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'database_controller.dart';
 import 'database_service.dart';
 
 class BackupDataHandler {
+  static String? vpath;
   Future<void> getBackupData() async {
-    String path = await getDatabasesPath();
-    // const String path = '/Users/bs00849/Desktop/Dev/db';
-    const String dbName = 'items.db';
-    const String tableName = 'items';
-    Database database;
     try {
-      database = await DatabaseService().openDataBase(path, dbName, tableName);
+      Database database = await DatabaseController().getDatabase(
+        tableName: 'items',
+      );
       late List<Map<String, dynamic>>? results;
 
       results = await DatabaseService().getAllData(database);
       if (results != null) {
         File? file = await writeJsonData(results);
-        print(file?.path);
+        vpath = file.path;
+        print(file.path);
       }
     } on Exception catch (e) {
       print(e.toString());
@@ -27,24 +27,16 @@ class BackupDataHandler {
   }
 
   Future<void> restoreBackupData() async {
-    String path = await getDatabasesPath();
-    // const String path = '/Users/bs00849/Desktop/Dev/db';
-    const String dbName = 'items.db';
-    const String tableName = 'items';
-    Database database;
-
+    Database database = await DatabaseController().getDatabase(
+      tableName: 'items',
+    );
     List<dynamic>? data = await readJsonData();
-    // print('Read data: $data');
+
     try {
-      database = await DatabaseService().openDataBase(
-        path,
-        dbName,
-        tableName,
-      );
-      DatabaseService().dropTable(tableName, database);
+      DatabaseService().dropTable('items', database);
       DatabaseService().createTable(
         ['id', 'name', 'price', 'date'],
-        tableName,
+        'items',
         database,
       );
       print(data?.length);
@@ -53,7 +45,7 @@ class BackupDataHandler {
           jsonData['Item'],
           jsonData['Cost'],
           DateTime.parse(jsonData['Date']),
-          tableName,
+          'items',
           database,
         );
       }

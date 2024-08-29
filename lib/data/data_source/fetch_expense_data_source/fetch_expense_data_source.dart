@@ -2,38 +2,26 @@ import 'package:dartz/dartz.dart';
 import 'package:expense_tracker/data/model/expense_details_model.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../database_controller.dart';
 import 'fetch_expense_database_service.dart';
 
 class FetchExpenseDataSource {
   Future<Either<String, List<ExpenseDetailsModel>>> readItems(
       DateTime date) async {
-    String path = await getDatabasesPath();
-    // const String path = '/Users/bs00849/Desktop/Dev/db';
-
-    String dbName = 'items.db';
-    Database database;
     try {
-      database = await FetchExpenseDatabaseService().openDataBase(path, dbName);
-    } on Exception catch (e) {
-      return Left(e.toString());
-    }
+      Database database = await DatabaseController().getDatabase(
+        tableName: 'items',
+      );
 
-    //String formattedDate = DateFormat('d MMM, yyyy').format(date);
-
-    late List<Map<String, dynamic>> results;
-    try {
+      late List<Map<String, dynamic>> results;
       results = await FetchExpenseDatabaseService().readData(database, date);
+      List<ExpenseDetailsModel> list = [];
+      for (var data in results) {
+        list.add(ExpenseDetailsModel.fromJson(data));
+      }
+      return Right(list);
     } on Exception catch (e) {
       return Left(e.toString());
     }
-
-    print(results);
-
-    List<ExpenseDetailsModel> list = [];
-    for (var data in results) {
-      list.add(ExpenseDetailsModel.fromJson(data));
-    }
-    await database.close();
-    return Right(list);
   }
 }
