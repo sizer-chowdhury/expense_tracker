@@ -44,5 +44,6 @@
     </queries>
     <meta-data
         android:name="com.google.android.gms.auth.api.signin"
-        android:value="@string/default_web_client_id"/>
+        />
+<!--    android:value="@string/default_web_client_id"-->
 </manifest>

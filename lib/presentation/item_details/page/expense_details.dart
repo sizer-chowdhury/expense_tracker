@@ -3,12 +3,17 @@ import 'package:expense_tracker/domain/entity/expense_details_entity.dart';
 import 'package:expense_tracker/presentation/item_details/bloc/expense_details_bloc.dart';
 import 'package:expense_tracker/presentation/item_details/bloc/expense_details_event.dart';
 import 'package:expense_tracker/presentation/item_details/bloc/expense_details_state.dart';
+import 'package:expense_tracker/presentation/item_details/widget/button.dart';
 import 'package:expense_tracker/presentation/item_details/widget/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/extensions/extensions.dart';
+
+import '../../dashboard/page/dashboard.dart';
 
 class ExpenseDetailsPage extends StatefulWidget {
   static const String path = "expense-details";
@@ -48,14 +53,21 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            context.go('/${Dashboard.path}');
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _date(context),
+              _datePriceOverView(context),
               Expanded(child: _expenseList(context)),
             ],
           ),
@@ -64,13 +76,111 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
     );
   }
 
-  Widget _date(BuildContext context) {
-    final theme = Theme.of(context);
-    return Text(
-      widget.dateTime.formattedDate(),
-      style: theme.textTheme.headlineSmall?.copyWith(
-        fontWeight: FontWeight.bold,
+  Widget _datePriceOverView(BuildContext context) {
+    return BlocBuilder<ExpenseDetailsBloc, ExpenseDetailsState>(
+        bloc: _bloc,
+        builder: (context, state) {
+          if (state is FetchExpenseSuccess) {
+            final totalPrice = state.totalPrice;
+            return _datePriceContainer(context, totalPrice);
+          } else if (state is FetchExpenseError) {
+            return Center(child: Text('Error: ${state.errorMessage}'));
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        });
+  }
+
+  Widget _datePriceContainer(BuildContext context, int? totalPrice) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return SizedBox(
+      height: height * 0.12,
+      child: Stack(
+        children: [
+          _insideContainer(height, width),
+          _outerContainer(height, width, totalPrice),
+        ],
       ),
+    );
+  }
+
+  Widget _insideContainer(double height, double width) {
+    return Container(
+      width: width,
+      height: height * 0.07,
+      decoration: _innerContainerDecoration(context),
+    );
+  }
+
+  BoxDecoration _innerContainerDecoration(BuildContext context) {
+    return BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Theme.of(context).colorScheme.primary.withAlpha(30),
+          Theme.of(context).colorScheme.tertiaryFixed.withAlpha(120),
+        ],
+      ),
+      borderRadius: const BorderRadius.only(
+        bottomLeft: Radius.circular(20),
+        bottomRight: Radius.circular(20),
+      ),
+    );
+  }
+
+  Widget _outerContainer(double height, double width, int? totalPrice) {
+    return Positioned(
+      top: height * 0.01,
+      left: width * 0.18,
+      child: Container(
+        height: height * 0.1,
+        width: width * 0.6,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.9),
+          borderRadius: BorderRadius.circular(10),
+          gradient: LinearGradient(
+            colors: [
+              Theme.of(context).colorScheme.secondary.withAlpha(100),
+              Theme.of(context).colorScheme.tertiaryFixed.withAlpha(150),
+            ],
+          ),
+          boxShadow: const [
+            BoxShadow(
+              blurRadius: 2,
+              spreadRadius: 1,
+            )
+          ],
+        ),
+        child: Center(
+          child: _datePriceColumn(totalPrice),
+        ),
+      ),
+    );
+  }
+
+  Widget _datePriceColumn(int? totalPrice) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Date: ${widget.dateTime.formattedDate()}",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          "Total Price: $totalPrice",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.tertiaryFixed,
+          ),
+        ),
+      ],
     );
   }
 
@@ -93,7 +203,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
 
           return ListView.builder(
             controller: _scrollController,
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             itemCount: expenses.length + 1,
             itemBuilder: (context, index) {
               if (index < expenses.length) {
@@ -130,12 +240,30 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
 
   Widget card(
       BuildContext context, ThemeData theme, ExpenseDetailsEntity expense) {
-    return Card(
-      elevation: 2.5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+    return Slidable(
+      key: Key('$expense'),
+      endActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (context) {
+              _bloc.add(DeleteExpense(id: expense.id));
+              _bloc.add(FetchExpenseEvent(date: widget.dateTime));
+            },
+            icon: Icons.delete_outline_outlined,
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          )
+        ],
       ),
-      child: _cardItem(expense, theme),
+      child: Card(
+        elevation: 2.5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: _cardItem(expense, theme),
+      ),
     );
   }
 
@@ -184,7 +312,18 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             (addButtonSnapshot.data!)
-                ? _addButton(context)
+                ? GradientButton(
+                    text: 'Add more...',
+                    onPressed: () {
+                      _isAddButtonVisible.add(false);
+                      _scrollDown();
+                    },
+                    gradientColors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).colorScheme.tertiaryFixed,
+                      Theme.of(context).colorScheme.onPrimary,
+                    ],
+                  )
                 : _addNewExpenseForm(),
           ],
         );
@@ -192,19 +331,8 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
     );
   }
 
-  Widget _addButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        _isAddButtonVisible.add(false);
-        _scrollDown();
-      },
-      style: _buttonStyle(),
-      child: const Text('Add'),
-    );
-  }
-
   void _scrollDown() {
-    if(_scrollController.hasClients){
+    if (_scrollController.hasClients) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent + 220.0,
         duration: const Duration(milliseconds: 1000),
@@ -237,41 +365,28 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   }
 
   Widget _saveButton(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10),
-      child: ElevatedButton(
-        onPressed: () {
-          _isAddButtonVisible.add(true);
-          _bloc.add(AddNewExpense(
-            description: title.text,
-            price: int.parse(price.text),
-            dateTime: widget.dateTime,
-          ));
-          _bloc.add(FetchExpenseEvent(date: widget.dateTime));
-          title.clear();
-          price.clear();
-        },
-        style: _buttonStyle(),
-        child: const Text('Save'),
-      ),
+    return GradientButton(
+      text: 'Save',
+      onPressed: () {
+        _isAddButtonVisible.add(true);
+        _bloc.add(AddNewExpense(
+          description: title.text,
+          price: int.parse(price.text),
+          dateTime: widget.dateTime,
+        ));
+        _bloc.add(FetchExpenseEvent(date: widget.dateTime));
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent + 10,
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.easeInOut,
+        );
+        title.clear();
+        price.clear();
+      },
+      gradientColors: [
+        Theme.of(context).colorScheme.primary,
+        Theme.of(context).colorScheme.tertiaryFixed
+      ], // Optional: custom gradient colors
     );
   }
-
-  _buttonStyle() {
-    return ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-      shadowColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-      elevation: 10,
-      textStyle: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-
 }

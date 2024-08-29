@@ -1,4 +1,7 @@
 
+import 'package:expense_tracker/presentation/item_details/page/expense_details.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../../domain/entity/item_entity.dart';
 import 'single_item.dart';
 
@@ -86,8 +89,13 @@ class _MyItemsState extends State<MyItems> with SingleTickerProviderStateMixin {
       ),
       child: Opacity(
         opacity: _controller.value,
-        child: SingleItem(
-          item: item,
+        child: GestureDetector(
+          onDoubleTap: (){
+            context.go("/${ExpenseDetailsPage.path}/${item.date}");
+          },
+          child: SingleItem(
+            item: item,
+          ),
         ),
       ),
     );
