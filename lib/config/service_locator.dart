@@ -1,6 +1,9 @@
+import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
+import 'package:expense_tracker/data/repository_imp/backup_data_repository_imp.dart';
 import 'package:expense_tracker/data/repository_imp/fetch_expense_repository_imp.dart';
 import 'package:expense_tracker/domain/repository/delete_expense_repository.dart';
 import 'package:expense_tracker/domain/repository/fetch_expense_repository.dart';
+import 'package:expense_tracker/domain/use_case/backup_data_use_case.dart';
 import 'package:expense_tracker/domain/use_case/fetch_expense_use_case.dart';
 import 'package:expense_tracker/data/repository_imp/generate_report_repo_imp.dart';
 import 'package:expense_tracker/domain/repository/generate_report_repo.dart';
@@ -37,4 +40,8 @@ Future<void> setUpServiceLocators() async {
   sl.registerLazySingleton<DeleteExpenseRepository>(
       () => DeleteExpenseRepositoryImpl());
   sl.registerLazySingleton<DeleteExpenseUseCase>(() => DeleteExpenseUseCase());
+
+  sl.registerLazySingleton<BackupDataUseCase>(
+    () => BackupDataUseCase(BackupDataRepositoryImp(BackupDataHandler())),
+  );
 }

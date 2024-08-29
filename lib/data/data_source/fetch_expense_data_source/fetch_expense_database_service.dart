@@ -43,8 +43,6 @@ class FetchExpenseDatabaseService {
     WHERE date(date) = ?
     ORDER BY id
   ''', [formattedDate]);
-    print(res);
     return res;
   }
-
 }

@@ -11,6 +11,10 @@ import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/utilities.dart';
 
+import '../../../config/service_locator.dart';
+
+import '../../../data/data_source/upload_google_drive.dart';
+import '../../../domain/use_case/backup_data_use_case.dart';
 import '../../item_details/page/expense_details.dart';
 
 enum GraphType { daily, monthly, yearly }
@@ -19,7 +23,6 @@ class Dashboard extends StatefulWidget {
   const Dashboard({
     super.key,
   });
-
   static const String path = 'dashboard';
 
   @override
@@ -38,7 +41,6 @@ class _DashboardState extends State<Dashboard> {
     GraphType.monthly,
     GraphType.yearly,
   ];
-
   @override
   void dispose() {
     super.dispose();
@@ -58,6 +60,41 @@ class _DashboardState extends State<Dashboard> {
 
     return Scaffold(
       appBar: myAppBar(context),
+      drawer: Drawer(
+        child: SafeArea(
+          child: Column(
+            children: [
+              IconButton(
+                onPressed: () {
+                  sl<BackupDataUseCase>().getBackupData();
+                },
+                icon: Icon(
+                  Icons.download,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  sl<BackupDataUseCase>().restoreBackupData();
+                },
+                icon: Icon(
+                  Icons.backup,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              IconButton(
+                onPressed: () async {
+                  await UploadGoogleDrive().uploadJsonExample();
+                },
+                icon: Icon(
+                  Icons.backup,
+                  color: Colors.red,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       floatingActionButton: Stack(
         children: [
