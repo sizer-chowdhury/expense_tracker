@@ -268,19 +268,16 @@ class _DashboardState extends State<Dashboard> {
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                       side: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.secondary,
                         width: 3,
                       ),
                     ),
-                  ),
-                  backgroundColor: WidgetStateProperty.all(
-                    Theme.of(context).colorScheme.surface,
                   ),
                 ),
                 child: Text(
                   'History',
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),

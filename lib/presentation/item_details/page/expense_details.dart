@@ -270,10 +270,6 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
                       _isAddButtonVisible.add(false);
                       _scrollDown();
                     },
-                    gradientColors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.onPrimary,
-                    ],
                   )
                 : _addNewExpenseForm(),
           ],
@@ -317,9 +313,9 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
 
   Widget _saveButton(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-      child: InkWell(
-        onTap: () {
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+      child: ElevatedButton(
+        onPressed: () {
           _isAddButtonVisible.add(true);
           _bloc.add(AddNewExpense(
             description: title.text,
@@ -335,33 +331,17 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           title.clear();
           price.clear();
         },
-        borderRadius: BorderRadius.circular(15),
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.onPrimary
-              ],
-            ),
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                offset: Offset(2, 2),
-                blurRadius: 5,
-              ),
-            ],
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
           ),
-          child:  Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(
-              'Save',style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-            ),
+          padding: const EdgeInsets.all(12.0),
+        ),
+        child: Text(
+          'Save',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
           ),
         ),
       ),
