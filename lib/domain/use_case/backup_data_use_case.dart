@@ -7,8 +7,4 @@ class BackupDataUseCase {
   Future<void> getBackupData() async {
     await backupDataRepository.getBackupData();
   }
-
-  Future<void> restoreBackupData() async {
-    await backupDataRepository.restoreBackupData();
-  }
 }

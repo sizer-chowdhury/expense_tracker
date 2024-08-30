@@ -1,3 +1,4 @@
+import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_state.dart';
@@ -60,41 +61,6 @@ class _DashboardState extends State<Dashboard> {
 
     return Scaffold(
       appBar: myAppBar(context),
-      drawer: Drawer(
-        child: SafeArea(
-          child: Column(
-            children: [
-              IconButton(
-                onPressed: () {
-                  sl<BackupDataUseCase>().getBackupData();
-                },
-                icon: Icon(
-                  Icons.download,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  sl<BackupDataUseCase>().restoreBackupData();
-                },
-                icon: Icon(
-                  Icons.backup,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              IconButton(
-                onPressed: () async {
-                  await UploadGoogleDrive().uploadJsonExample();
-                },
-                icon: Icon(
-                  Icons.backup,
-                  color: Colors.red,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       floatingActionButton: Stack(
         children: [
@@ -323,12 +289,36 @@ class _DashboardState extends State<Dashboard> {
   AppBar myAppBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      title: Text(
-        'Expense Tracker',
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.surface,
-          fontWeight: FontWeight.bold,
-        ),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const SizedBox(),
+          Text(
+            'Expense Tracker',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.surface,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              sl<BackupDataUseCase>().getBackupData();
+            },
+            icon: Icon(
+              Icons.backup,
+              color: Theme.of(context).colorScheme.surface,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              BackupDataHandler().restoreBackupData();
+            },
+            icon: Icon(
+              Icons.download,
+              color: Theme.of(context).colorScheme.surface,
+            ),
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).colorScheme.primary,
     );

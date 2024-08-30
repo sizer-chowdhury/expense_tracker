@@ -9,9 +9,4 @@ class BackupDataRepositoryImp implements BackupDataRepository {
   Future<void> getBackupData() async {
     await backupDataHandler.getBackupData();
   }
-
-  @override
-  Future<void> restoreBackupData() async {
-    await backupDataHandler.restoreBackupData();
-  }
 }

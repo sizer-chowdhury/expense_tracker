@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:expense_tracker/data/data_source/upload_google_drive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -7,7 +8,7 @@ import 'database_controller.dart';
 import 'database_service.dart';
 
 class BackupDataHandler {
-  static String? vpath;
+  static String? filePath;
   Future<void> getBackupData() async {
     try {
       Database database = await DatabaseController().getDatabase(
@@ -18,8 +19,8 @@ class BackupDataHandler {
       results = await DatabaseService().getAllData(database);
       if (results != null) {
         File? file = await writeJsonData(results);
-        vpath = file.path;
         print(file.path);
+        UploadGoogleDrive().uploadFileToGoogleDrive(file);
       }
     } on Exception catch (e) {
       print(e.toString());
@@ -62,7 +63,7 @@ class BackupDataHandler {
 
   Future<List<dynamic>?> readJsonData() async {
     try {
-      final file = await _getLocalFile('data.json');
+      final file = await _getLocalFile('downloaded_data.json');
       String jsonData = await file.readAsString();
       return jsonDecode(jsonData);
     } catch (e) {
