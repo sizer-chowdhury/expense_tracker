@@ -56,35 +56,37 @@ class UploadGoogleDrive {
   Future<void> uploadFileToGoogleDrive(File jsonFile) async {
     final authClient = await _getAuthClient();
     if (authClient == null) {
-      print('Failed to authenticate client.');
       return;
     }
 
     final driveApi = drive.DriveApi(authClient);
 
     final media = drive.Media(jsonFile.openRead(), jsonFile.lengthSync());
-    final driveFile = drive.File()
-      ..name = 'data.json'
-      ..parents = ['appDataFolder'];
 
     try {
-      final result = await driveApi.files.create(driveFile, uploadMedia: media);
-      print('File uploaded: ${result.id}');
-      print('File name: ${result.name}');
-      print('File mime type: ${result.mimeType}');
-      final gDrive = DownloadGoogleDrive(authClient);
-      final directory = await getApplicationDocumentsDirectory();
-      final localFilePath = '${directory.path}/downloaded_data.json';
-      gDrive.downloadFileFromGoogleDrive(result.id!, localFilePath);
-      print(directory.path);
-      BackupDataHandler().restoreBackupData();
+      final fileList = await driveApi.files.list(q: "name = 'data.json'");
+      drive.File? exFile;
+
+      if (fileList.files != null && fileList.files!.isNotEmpty) {
+        exFile = fileList.files!.first;
+      }
+      if (exFile != null) {
+        final updatedFile = await driveApi.files.update(
+          drive.File(),
+          exFile.id!,
+          uploadMedia: media,
+        );
+        print('File updated: ${updatedFile.id}');
+      } else {
+        final driveFile = drive.File()..name = 'data.json';
+        exFile = await driveApi.files.create(driveFile, uploadMedia: media);
+      }
+      // final gDrive = DownloadGoogleDrive(authClient);
+      // final directory = await getApplicationDocumentsDirectory();
+      // final localFilePath = '${directory.path}/downloaded_data.json';
+      // gDrive.downloadFileFromGoogleDrive(exFile.id!, localFilePath);
     } catch (error) {
       print('Error uploading file: $error');
     }
-  }
-
-  Future<void> uploadJsonExample() async {
-    final jsonFile = File(BackupDataHandler.filePath!);
-    await uploadFileToGoogleDrive(jsonFile);
   }
 }

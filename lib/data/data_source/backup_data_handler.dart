@@ -31,6 +31,7 @@ class BackupDataHandler {
     Database database = await DatabaseController().getDatabase(
       tableName: 'items',
     );
+
     List<dynamic>? data = await readJsonData();
 
     try {

@@ -1,4 +1,5 @@
 import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
+import 'package:expense_tracker/data/data_source/restore_data.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_state.dart';
@@ -311,7 +312,7 @@ class _DashboardState extends State<Dashboard> {
           ),
           IconButton(
             onPressed: () {
-              BackupDataHandler().restoreBackupData();
+              DownloadGoogleDrive().downloadFileFromGoogleDrive();
             },
             icon: Icon(
               Icons.download,

@@ -1,25 +1,32 @@
 import 'dart:io';
+import 'package:expense_tracker/data/data_source/backup/google_drive_auth.dart';
+import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis_auth/auth_io.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DownloadGoogleDrive {
-  final AuthClient _authClient;
+  Future<void> downloadFileFromGoogleDrive() async {
+    final authClient = await GoogleDriveAuth().getAuthClient();
+    if (authClient == null) return;
+    final driveApi = drive.DriveApi(authClient);
+    final directory = await getApplicationDocumentsDirectory();
+    final localFilePath = '${directory.path}/downloaded_data.json';
+    final fileList = await driveApi.files.list(q: "name = 'data.json'");
+    drive.File? exFile;
 
-  DownloadGoogleDrive(this._authClient);
-
-  Future<void> downloadFileFromGoogleDrive(
-    String fileId,
-    String localPath,
-  ) async {
-    final driveApi = drive.DriveApi(_authClient);
-
+    if (fileList.files != null && fileList.files!.isNotEmpty) {
+      exFile = fileList.files!.first;
+    } else {
+      return;
+    }
     try {
       // Create a request to get the file content
       final media = await driveApi.files
-          .get(fileId, downloadOptions: drive.DownloadOptions.fullMedia);
+          .get(exFile.id!, downloadOptions: drive.DownloadOptions.fullMedia);
 
       // Handle the response as a stream of data
-      final file = File(localPath);
+      final file = File(localFilePath);
       final sink = file.openWrite();
 
       // Ensure media is a Stream
@@ -34,7 +41,9 @@ class DownloadGoogleDrive {
       await sink.flush();
       await sink.close();
 
-      print('File downloaded to: $localPath');
+      print('File downloaded to: $localFilePath');
+
+      BackupDataHandler().restoreBackupData();
     } catch (error) {
       print('Error downloading file: $error');
     }
