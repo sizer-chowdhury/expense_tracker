@@ -1,4 +1,4 @@
 abstract class BackupDataRepository {
-  Future<void> getBackupData();
-  Future<void> restoreBackupData();
+  Future<String?> getBackupData();
+  Future<String?> restoreBackupData();
 }

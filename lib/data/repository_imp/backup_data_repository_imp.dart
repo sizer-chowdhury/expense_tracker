@@ -6,12 +6,12 @@ class BackupDataRepositoryImp implements BackupDataRepository {
   final BackupDataHandler backupDataHandler;
   BackupDataRepositoryImp(this.backupDataHandler);
   @override
-  Future<void> getBackupData() async {
-    await backupDataHandler.getBackupData();
+  Future<String?> getBackupData() async {
+    return await backupDataHandler.getBackupData();
   }
 
   @override
-  Future<void> restoreBackupData() async {
-    await backupDataHandler.restoreBackupData();
+  Future<String?> restoreBackupData() {
+    return backupDataHandler.restoreBackupData();
   }
 }

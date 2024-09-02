@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:expense_tracker/data/data_source/backup/google_drive_auth.dart';
+import 'package:expense_tracker/data/data_source/download_from_google_drive.dart';
+import 'package:expense_tracker/data/data_source/upload_to_google_drive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-
+import 'package:googleapis/drive/v3.dart' as drive;
 import 'database_controller.dart';
 import 'database_service.dart';
 
 class BackupDataHandler {
-  static String? vpath;
-  Future<void> getBackupData() async {
+  static String? filePath;
+  Future<String?> getBackupData() async {
     try {
       Database database = await DatabaseController().getDatabase(
         tableName: 'items',
@@ -16,20 +19,26 @@ class BackupDataHandler {
       late List<Map<String, dynamic>>? results;
 
       results = await DatabaseService().getAllData(database);
+      String? res;
       if (results != null) {
         File? file = await writeJsonData(results);
-        vpath = file.path;
         print(file.path);
+        res = await UploadGoogleDrive().uploadFileToGoogleDrive(file);
       }
+      return res;
     } on Exception catch (e) {
-      print(e.toString());
+      print('in backup handler: ${e.toString()}');
+      return e.toString();
     }
   }
 
-  Future<void> restoreBackupData() async {
+  Future<String?> restoreBackupData() async {
     Database database = await DatabaseController().getDatabase(
       tableName: 'items',
     );
+    String? responseError =
+        await DownloadFromGoogleDrive().downloadFileFromGoogleDrive();
+    if (responseError != null) return responseError;
     List<dynamic>? data = await readJsonData();
 
     try {
@@ -49,8 +58,10 @@ class BackupDataHandler {
           database,
         );
       }
+      return null;
     } on Exception catch (e) {
       print(e.toString());
+      return e.toString();
     }
   }
 
@@ -62,7 +73,7 @@ class BackupDataHandler {
 
   Future<List<dynamic>?> readJsonData() async {
     try {
-      final file = await _getLocalFile('data.json');
+      final file = await _getLocalFile('downloaded_data.json');
       String jsonData = await file.readAsString();
       return jsonDecode(jsonData);
     } catch (e) {

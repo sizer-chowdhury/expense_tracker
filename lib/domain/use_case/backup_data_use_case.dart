@@ -4,11 +4,11 @@ class BackupDataUseCase {
   final BackupDataRepository backupDataRepository;
   BackupDataUseCase(this.backupDataRepository);
 
-  Future<void> getBackupData() async {
-    await backupDataRepository.getBackupData();
+  Future<String?> getBackupData() async {
+    return await backupDataRepository.getBackupData();
   }
 
-  Future<void> restoreBackupData() async {
-    await backupDataRepository.restoreBackupData();
+  Future<String?> restoreBackupData() async {
+    return await backupDataRepository.restoreBackupData();
   }
 }

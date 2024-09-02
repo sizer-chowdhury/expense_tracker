@@ -1,3 +1,7 @@
+import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
+import 'package:expense_tracker/data/data_source/download_from_google_drive.dart';
+import 'package:expense_tracker/presentation/dashboard/bloc/drive_backup_bloc/drive_bloc.dart';
+import 'package:expense_tracker/presentation/dashboard/bloc/drive_backup_bloc/drive_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_state.dart';
@@ -12,10 +16,9 @@ import 'package:rxdart/rxdart.dart';
 import 'package:utilities/utilities.dart';
 
 import '../../../config/service_locator.dart';
-
-import '../../../data/data_source/upload_google_drive.dart';
 import '../../../domain/use_case/backup_data_use_case.dart';
 import '../../item_details/page/expense_details.dart';
+import '../bloc/drive_backup_bloc/drive_state.dart';
 
 enum GraphType { daily, monthly, yearly }
 
@@ -32,6 +35,8 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final GraphBloc graphBloc = GraphBloc();
+  final DriveBloc driveBloc = DriveBloc();
+
   final BehaviorSubject<String> _currentDate =
       BehaviorSubject<String>.seeded(DateTime.now().formattedDate());
 
@@ -47,6 +52,7 @@ class _DashboardState extends State<Dashboard> {
   void dispose() {
     super.dispose();
     graphBloc.close();
+    driveBloc.close();
     _currentDate.close();
   }
 
@@ -62,41 +68,6 @@ class _DashboardState extends State<Dashboard> {
 
     return Scaffold(
       appBar: myAppBar(context),
-      drawer: Drawer(
-        child: SafeArea(
-          child: Column(
-            children: [
-              IconButton(
-                onPressed: () {
-                  sl<BackupDataUseCase>().getBackupData();
-                },
-                icon: Icon(
-                  Icons.download,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  sl<BackupDataUseCase>().restoreBackupData();
-                },
-                icon: Icon(
-                  Icons.backup,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              IconButton(
-                onPressed: () async {
-                  await UploadGoogleDrive().uploadJsonExample();
-                },
-                icon: Icon(
-                  Icons.backup,
-                  color: Colors.red,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       floatingActionButton: Stack(
         children: [
@@ -336,14 +307,88 @@ class _DashboardState extends State<Dashboard> {
   AppBar myAppBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      title: Text(
-        'Expense Tracker',
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.surface,
-          fontWeight: FontWeight.bold,
-        ),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          const SizedBox(),
+          Text(
+            'Expense Tracker',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.surface,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          BlocListener<DriveBloc, DriveState>(
+            bloc: driveBloc,
+            listener: (context, state) {
+              if (state is DriveUploadFailed) {
+                _updateAlert(context, state.errorMessage, Colors.red);
+              } else if (state is DriveUploadSuccess) {
+                _updateAlert(context, state.successMessage, Colors.green);
+              }
+            },
+            child: BlocBuilder<DriveBloc, DriveState>(
+              bloc: driveBloc,
+              builder: (context, state) {
+                if (state is DriveUploadLoading) {
+                  return CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.surface,
+                  );
+                }
+                return IconButton(
+                  onPressed: () {
+                    driveBloc.add(DriveUploadEvent());
+                  },
+                  icon: Icon(
+                    Icons.backup,
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
+                );
+              },
+            ),
+          ),
+          BlocListener<DriveBloc, DriveState>(
+            bloc: driveBloc,
+            listener: (context, state) {
+              if (state is DriveDownloadFailed) {
+                _updateAlert(context, state.errorMessage, Colors.red);
+              } else if (state is DriveDownloadSuccess) {
+                _updateAlert(context, state.successMessage, Colors.green);
+              }
+            },
+            child: BlocBuilder<DriveBloc, DriveState>(
+              bloc: driveBloc,
+              builder: (context, state) {
+                if (state is DriveDownloading) {
+                  return CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.surface,
+                  );
+                }
+                return IconButton(
+                  onPressed: () {
+                    driveBloc.add(DriveDownloadEvent());
+                  },
+                  icon: Icon(
+                    Icons.download,
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).colorScheme.primary,
+    );
+  }
+
+  void _updateAlert(BuildContext context, String msg, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: color,
+        duration: const Duration(seconds: 3),
+      ),
     );
   }
 }
