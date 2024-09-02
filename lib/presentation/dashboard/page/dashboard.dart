@@ -26,6 +26,7 @@ class Dashboard extends StatefulWidget {
   const Dashboard({
     super.key,
   });
+
   static const String path = 'dashboard';
 
   @override
@@ -46,6 +47,7 @@ class _DashboardState extends State<Dashboard> {
     GraphType.monthly,
     GraphType.yearly,
   ];
+
   @override
   void dispose() {
     super.dispose();
@@ -147,64 +149,78 @@ class _DashboardState extends State<Dashboard> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const SizedBox(height: 10),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: BlocBuilder<GraphBloc, GraphState>(
-                    bloc: graphBloc,
-                    builder: (context, state) {
-                      if (state is GraphStateSuccess) {
-                        return Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(
-                                3,
-                                (index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: _selectGraph(
-                                      index,
-                                      state.graphType,
-                                      context,
-                                    ),
-                                  );
-                                },
+              GestureDetector(
+                onTap: () {
+                  context.push(
+                    '/${ItemListPage.path}',
+                  );
+                },
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: BlocBuilder<GraphBloc, GraphState>(
+                      bloc: graphBloc,
+                      builder: (context, state) {
+                        if (state is GraphStateSuccess) {
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  3,
+                                  (index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: _selectGraph(
+                                        index,
+                                        state.graphType,
+                                        context,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                            BarList(
-                              items: state.itemList,
-                              graphType: state.graphType,
-                            ),
-                          ],
-                        );
-                      } else if (state is GraphStateFailed) {
-                        return Text(state.errorMessage);
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    },
+                              BarList(
+                                items: state.itemList,
+                                graphType: state.graphType,
+                              ),
+                            ],
+                          );
+                        } else if (state is GraphStateFailed) {
+                          return Text(state.errorMessage);
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      },
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: BlocBuilder<GraphBloc, GraphState>(
-                    bloc: graphBloc,
-                    builder: (context, state) {
-                      if (state is GraphStateSuccess) {
-                        return LineGraph(
-                          items: state.itemList,
-                          graphType: state.graphType,
-                        );
-                      } else if (state is GraphStateFailed) {
-                        return Text(state.errorMessage);
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    },
+              GestureDetector(
+                onTap: () {
+                  context.push(
+                    '/${ItemListPage.path}',
+                  );
+                },
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: BlocBuilder<GraphBloc, GraphState>(
+                      bloc: graphBloc,
+                      builder: (context, state) {
+                        if (state is GraphStateSuccess) {
+                          return LineGraph(
+                            items: state.itemList,
+                            graphType: state.graphType,
+                          );
+                        } else if (state is GraphStateFailed) {
+                          return Text(state.errorMessage);
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -223,19 +239,16 @@ class _DashboardState extends State<Dashboard> {
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                       side: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.secondary,
                         width: 3,
                       ),
                     ),
                   ),
-                  backgroundColor: WidgetStateProperty.all(
-                    Theme.of(context).colorScheme.surface,
-                  ),
                 ),
                 child: Text(
-                  'View Details',
+                  'History',
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),

@@ -1,7 +1,3 @@
-
-import 'package:expense_tracker/presentation/item_details/page/expense_details.dart';
-import 'package:go_router/go_router.dart';
-
 import '../../../../domain/entity/item_entity.dart';
 import 'single_item.dart';
 
@@ -10,6 +6,7 @@ import 'package:flutter/material.dart';
 class MyItems extends StatefulWidget {
   final List<ItemEntity>? itemList;
   static const path = 'MyItems';
+
   const MyItems({super.key, required this.itemList});
 
   @override
@@ -89,13 +86,8 @@ class _MyItemsState extends State<MyItems> with SingleTickerProviderStateMixin {
       ),
       child: Opacity(
         opacity: _controller.value,
-        child: GestureDetector(
-          onDoubleTap: (){
-            context.go("/${ExpenseDetailsPage.path}/${item.date}");
-          },
-          child: SingleItem(
-            item: item,
-          ),
+        child: SingleItem(
+          item: item,
         ),
       ),
     );

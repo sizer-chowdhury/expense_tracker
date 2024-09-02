@@ -5,6 +5,7 @@ import 'package:expense_tracker/presentation/item_details/bloc/expense_details_e
 import 'package:expense_tracker/presentation/item_details/bloc/expense_details_state.dart';
 import 'package:expense_tracker/presentation/item_details/widget/button.dart';
 import 'package:expense_tracker/presentation/item_details/widget/custom_textfield.dart';
+import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,9 +19,10 @@ import '../../dashboard/page/dashboard.dart';
 class ExpenseDetailsPage extends StatefulWidget {
   static const String path = "expense-details";
 
-  const ExpenseDetailsPage({super.key, required this.dateTime});
+  const ExpenseDetailsPage({super.key, required this.dateTime, this.source});
 
   final DateTime dateTime;
+  final String? source;
 
   @override
   State<ExpenseDetailsPage> createState() => _ExpenseDetailsPageState();
@@ -56,7 +58,11 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            context.go('/${Dashboard.path}');
+            if (widget.source == null) {
+              context.go('/${Dashboard.path}');
+            } else {
+              context.go('/${ItemListPage.path}');
+            }
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
@@ -98,52 +104,21 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
       height: height * 0.12,
       child: Stack(
         children: [
-          _insideContainer(height, width),
           _outerContainer(height, width, totalPrice),
         ],
       ),
     );
   }
 
-  Widget _insideContainer(double height, double width) {
-    return Container(
-      width: width,
-      height: height * 0.07,
-      decoration: _innerContainerDecoration(context),
-    );
-  }
-
-  BoxDecoration _innerContainerDecoration(BuildContext context) {
-    return BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          Theme.of(context).colorScheme.primary.withAlpha(30),
-          Theme.of(context).colorScheme.tertiaryFixed.withAlpha(120),
-        ],
-      ),
-      borderRadius: const BorderRadius.only(
-        bottomLeft: Radius.circular(20),
-        bottomRight: Radius.circular(20),
-      ),
-    );
-  }
-
   Widget _outerContainer(double height, double width, int? totalPrice) {
     return Positioned(
-      top: height * 0.01,
       left: width * 0.18,
       child: Container(
         height: height * 0.1,
         width: width * 0.6,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.9),
+          color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(10),
-          gradient: LinearGradient(
-            colors: [
-              Theme.of(context).colorScheme.secondary.withAlpha(100),
-              Theme.of(context).colorScheme.tertiaryFixed.withAlpha(150),
-            ],
-          ),
           boxShadow: const [
             BoxShadow(
               blurRadius: 2,
@@ -177,7 +152,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.tertiaryFixed,
+            color: Theme.of(context).colorScheme.onPrimary,
           ),
         ),
       ],
@@ -191,14 +166,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         if (state is FetchExpenseSuccess) {
           final expenses = state.list;
           if (expenses == null || expenses.isEmpty) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Center(child: Text('No expenses found.')),
-                const SizedBox(height: 30),
-                bottomItem(context),
-              ],
-            );
+            return bottomItem(context);
           }
 
           return ListView.builder(
@@ -225,17 +193,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
 
   Widget expenseItem(
       BuildContext context, ExpenseDetailsEntity expense, ThemeData theme) {
-    return GestureDetector(
-      onLongPress: () {
-        _longPressEvent(context, expense);
-      },
-      child: card(context, theme, expense),
-    );
-  }
-
-  void _longPressEvent(BuildContext context, ExpenseDetailsEntity expense) {
-    _isAddButtonVisible.add(false);
-    _scrollDown();
+    return card(context, theme, expense);
   }
 
   Widget card(
@@ -294,6 +252,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         ),
         IconButton(
           icon: const Icon(Icons.delete_outline_outlined),
+          color: theme.colorScheme.primary,
           onPressed: () {
             _bloc.add(DeleteExpense(id: id));
             _bloc.add(FetchExpenseEvent(date: widget.dateTime));
@@ -313,16 +272,10 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           children: [
             (addButtonSnapshot.data!)
                 ? GradientButton(
-                    text: 'Add more...',
                     onPressed: () {
                       _isAddButtonVisible.add(false);
                       _scrollDown();
                     },
-                    gradientColors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.tertiaryFixed,
-                      Theme.of(context).colorScheme.onPrimary,
-                    ],
                   )
                 : _addNewExpenseForm(),
           ],
@@ -365,28 +318,39 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   }
 
   Widget _saveButton(BuildContext context) {
-    return GradientButton(
-      text: 'Save',
-      onPressed: () {
-        _isAddButtonVisible.add(true);
-        _bloc.add(AddNewExpense(
-          description: title.text,
-          price: int.parse(price.text),
-          dateTime: widget.dateTime,
-        ));
-        _bloc.add(FetchExpenseEvent(date: widget.dateTime));
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent + 10,
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.easeInOut,
-        );
-        title.clear();
-        price.clear();
-      },
-      gradientColors: [
-        Theme.of(context).colorScheme.primary,
-        Theme.of(context).colorScheme.tertiaryFixed
-      ], // Optional: custom gradient colors
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+      child: ElevatedButton(
+        onPressed: () {
+          _isAddButtonVisible.add(true);
+          _bloc.add(AddNewExpense(
+            description: title.text,
+            price: int.parse(price.text),
+            dateTime: widget.dateTime,
+          ));
+          _bloc.add(FetchExpenseEvent(date: widget.dateTime));
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent + 10,
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.easeInOut,
+          );
+          title.clear();
+          price.clear();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: const EdgeInsets.all(12.0),
+        ),
+        child: Text(
+          'Save',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
+      ),
     );
   }
 }

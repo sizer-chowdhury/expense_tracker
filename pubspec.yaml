@@ -33,7 +33,7 @@ dependencies:
   rxdart: ^0.28.0
   utilities:
     path: packages/utilities
-  fl_chart: ^0.68.0
+  fl_chart: ^0.69.0
 
   dartz: any
   path_provider: ^2.1.4

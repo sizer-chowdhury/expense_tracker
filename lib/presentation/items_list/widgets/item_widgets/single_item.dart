@@ -1,6 +1,10 @@
+import 'package:go_router/go_router.dart';
+
 import '../../../../domain/entity/item_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:utilities/utilities.dart';
+
+import '../../../item_details/page/expense_details.dart';
 
 class SingleItem extends StatelessWidget {
   const SingleItem({
@@ -24,7 +28,7 @@ class SingleItem extends StatelessWidget {
 
   ListTile _myListTile(BuildContext context) {
     return ListTile(
-      contentPadding: const EdgeInsets.all(16),
+      contentPadding: const EdgeInsets.all(5),
       leading: _leadingIcon(context),
       title: _itemTittle(context),
       subtitle: Text(
@@ -33,8 +37,13 @@ class SingleItem extends StatelessWidget {
           color: Theme.of(context).colorScheme.primary,
         ),
       ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
+      trailing: IconButton(
+        onPressed: () {
+          context.go("/${ExpenseDetailsPage.path}/${item?.date}?source=secondPage");
+        },
+        icon: const Icon(
+          Icons.arrow_forward_ios,
+        ),
         color: Theme.of(context).colorScheme.primary,
       ),
       onTap: () {},
