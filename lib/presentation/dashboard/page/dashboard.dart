@@ -227,7 +227,7 @@ class _DashboardState extends State<Dashboard> {
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  context.push(
+                  context.go(
                     '/${ItemListPage.path}',
                   );
                 },
