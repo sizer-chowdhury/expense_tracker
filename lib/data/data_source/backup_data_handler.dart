@@ -1,15 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:expense_tracker/data/data_source/upload_google_drive.dart';
+import 'package:expense_tracker/data/data_source/backup/google_drive_auth.dart';
+import 'package:expense_tracker/data/data_source/download_from_google_drive.dart';
+import 'package:expense_tracker/data/data_source/upload_to_google_drive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-
+import 'package:googleapis/drive/v3.dart' as drive;
 import 'database_controller.dart';
 import 'database_service.dart';
 
 class BackupDataHandler {
   static String? filePath;
-  Future<void> getBackupData() async {
+  Future<String?> getBackupData() async {
     try {
       Database database = await DatabaseController().getDatabase(
         tableName: 'items',
@@ -17,13 +19,16 @@ class BackupDataHandler {
       late List<Map<String, dynamic>>? results;
 
       results = await DatabaseService().getAllData(database);
+      String? res;
       if (results != null) {
         File? file = await writeJsonData(results);
         print(file.path);
-        UploadGoogleDrive().uploadFileToGoogleDrive(file);
+        res = await UploadGoogleDrive().uploadFileToGoogleDrive(file);
       }
+      return res;
     } on Exception catch (e) {
-      print(e.toString());
+      print('in backup handler: ${e.toString()}');
+      return e.toString();
     }
   }
 
@@ -31,7 +36,7 @@ class BackupDataHandler {
     Database database = await DatabaseController().getDatabase(
       tableName: 'items',
     );
-
+    DownloadFromGoogleDrive().downloadFileFromGoogleDrive();
     List<dynamic>? data = await readJsonData();
 
     try {

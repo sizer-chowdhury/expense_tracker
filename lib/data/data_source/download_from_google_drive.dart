@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'package:expense_tracker/data/data_source/backup/google_drive_auth.dart';
-import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
-import 'package:googleapis_auth/auth_io.dart';
 import 'package:path_provider/path_provider.dart';
 
-class DownloadGoogleDrive {
+class DownloadFromGoogleDrive {
   Future<void> downloadFileFromGoogleDrive() async {
     final authClient = await GoogleDriveAuth().getAuthClient();
     if (authClient == null) return;
@@ -16,6 +14,7 @@ class DownloadGoogleDrive {
     drive.File? exFile;
 
     if (fileList.files != null && fileList.files!.isNotEmpty) {
+      print('drive files list length: ${fileList.files!.length}');
       exFile = fileList.files!.first;
     } else {
       return;
@@ -42,8 +41,6 @@ class DownloadGoogleDrive {
       await sink.close();
 
       print('File downloaded to: $localFilePath');
-
-      BackupDataHandler().restoreBackupData();
     } catch (error) {
       print('Error downloading file: $error');
     }

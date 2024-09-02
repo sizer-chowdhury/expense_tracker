@@ -1,5 +1,7 @@
 import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
-import 'package:expense_tracker/data/data_source/restore_data.dart';
+import 'package:expense_tracker/data/data_source/download_from_google_drive.dart';
+import 'package:expense_tracker/presentation/dashboard/bloc/drive_backup_bloc/drive_bloc.dart';
+import 'package:expense_tracker/presentation/dashboard/bloc/drive_backup_bloc/drive_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_state.dart';
@@ -14,10 +16,9 @@ import 'package:rxdart/rxdart.dart';
 import 'package:utilities/utilities.dart';
 
 import '../../../config/service_locator.dart';
-
-import '../../../data/data_source/upload_google_drive.dart';
 import '../../../domain/use_case/backup_data_use_case.dart';
 import '../../item_details/page/expense_details.dart';
+import '../bloc/drive_backup_bloc/drive_state.dart';
 
 enum GraphType { daily, monthly, yearly }
 
@@ -33,6 +34,8 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final GraphBloc graphBloc = GraphBloc();
+  final DriveBloc driveBloc = DriveBloc();
+
   final BehaviorSubject<String> _currentDate =
       BehaviorSubject<String>.seeded(DateTime.now().formattedDate());
 
@@ -47,6 +50,7 @@ class _DashboardState extends State<Dashboard> {
   void dispose() {
     super.dispose();
     graphBloc.close();
+    driveBloc.close();
     _currentDate.close();
   }
 
@@ -301,18 +305,38 @@ class _DashboardState extends State<Dashboard> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          IconButton(
-            onPressed: () {
-              sl<BackupDataUseCase>().getBackupData();
+          BlocListener<DriveBloc, DriveState>(
+            bloc: driveBloc,
+            listener: (context, state) {
+              if (state is DriveStateFailed) {
+                _updateAlert(context, state.errorMessage, Colors.red);
+              } else if (state is DriveStateSuccess) {
+                _updateAlert(context, state.successMessage, Colors.green);
+              }
             },
-            icon: Icon(
-              Icons.backup,
-              color: Theme.of(context).colorScheme.surface,
+            child: BlocBuilder<DriveBloc, DriveState>(
+              bloc: driveBloc,
+              builder: (context, state) {
+                if (state is DriveStateLoading) {
+                  return CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.surface,
+                  );
+                }
+                return IconButton(
+                  onPressed: () {
+                    driveBloc.add(DriveEvent());
+                  },
+                  icon: Icon(
+                    Icons.backup,
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
+                );
+              },
             ),
           ),
           IconButton(
             onPressed: () {
-              DownloadGoogleDrive().downloadFileFromGoogleDrive();
+              BackupDataHandler().restoreBackupData();
             },
             icon: Icon(
               Icons.download,
@@ -322,6 +346,16 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       backgroundColor: Theme.of(context).colorScheme.primary,
+    );
+  }
+
+  void _updateAlert(BuildContext context, String msg, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: color,
+        duration: const Duration(seconds: 3),
+      ),
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
-import 'package:expense_tracker/data/data_source/restore_data.dart';
+import 'package:expense_tracker/data/data_source/download_from_google_drive.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:googleapis_auth/auth_io.dart';
@@ -53,17 +53,17 @@ class UploadGoogleDrive {
     return authClient;
   }
 
-  Future<void> uploadFileToGoogleDrive(File jsonFile) async {
-    final authClient = await _getAuthClient();
-    if (authClient == null) {
-      return;
-    }
-
-    final driveApi = drive.DriveApi(authClient);
-
-    final media = drive.Media(jsonFile.openRead(), jsonFile.lengthSync());
-
+  Future<String?> uploadFileToGoogleDrive(File jsonFile) async {
     try {
+      final authClient = await _getAuthClient();
+      if (authClient == null) {
+        return 'No auth client found';
+      }
+
+      final driveApi = drive.DriveApi(authClient);
+
+      final media = drive.Media(jsonFile.openRead(), jsonFile.lengthSync());
+
       final fileList = await driveApi.files.list(q: "name = 'data.json'");
       drive.File? exFile;
 
@@ -81,12 +81,10 @@ class UploadGoogleDrive {
         final driveFile = drive.File()..name = 'data.json';
         exFile = await driveApi.files.create(driveFile, uploadMedia: media);
       }
-      // final gDrive = DownloadGoogleDrive(authClient);
-      // final directory = await getApplicationDocumentsDirectory();
-      // final localFilePath = '${directory.path}/downloaded_data.json';
-      // gDrive.downloadFileFromGoogleDrive(exFile.id!, localFilePath);
+      return null;
     } catch (error) {
       print('Error uploading file: $error');
+      return 'Error uploading file: $error';
     }
   }
 }
