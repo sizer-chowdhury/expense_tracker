@@ -5,8 +5,10 @@ class BackupDataUseCase {
   BackupDataUseCase(this.backupDataRepository);
 
   Future<String?> getBackupData() async {
-    var res = await backupDataRepository.getBackupData();
-    print('in use case: $res');
-    return res;
+    return await backupDataRepository.getBackupData();
+  }
+
+  Future<String?> restoreBackupData() async {
+    return await backupDataRepository.restoreBackupData();
   }
 }

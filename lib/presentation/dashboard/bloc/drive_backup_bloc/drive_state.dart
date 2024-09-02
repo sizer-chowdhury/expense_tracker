@@ -7,18 +7,34 @@ class DriveState extends Equatable {
 
 class DriveInitState extends DriveState {}
 
-class DriveStateLoading extends DriveState {}
+class DriveUploadLoading extends DriveState {}
 
-class DriveStateSuccess extends DriveState {
+class DriveDownloading extends DriveState {}
+
+class DriveUploadSuccess extends DriveState {
   final String successMessage;
-  DriveStateSuccess({required this.successMessage});
+  DriveUploadSuccess({required this.successMessage});
   @override
   List<Object?> get props => [successMessage];
 }
 
-class DriveStateFailed extends DriveState {
+class DriveUploadFailed extends DriveState {
   final String errorMessage;
-  DriveStateFailed({required this.errorMessage});
+  DriveUploadFailed({required this.errorMessage});
+  @override
+  List<Object?> get props => [errorMessage];
+}
+
+class DriveDownloadSuccess extends DriveState {
+  final String successMessage;
+  DriveDownloadSuccess({required this.successMessage});
+  @override
+  List<Object?> get props => [successMessage];
+}
+
+class DriveDownloadFailed extends DriveState {
+  final String errorMessage;
+  DriveDownloadFailed({required this.errorMessage});
   @override
   List<Object?> get props => [errorMessage];
 }

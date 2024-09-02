@@ -32,11 +32,13 @@ class BackupDataHandler {
     }
   }
 
-  Future<void> restoreBackupData() async {
+  Future<String?> restoreBackupData() async {
     Database database = await DatabaseController().getDatabase(
       tableName: 'items',
     );
-    DownloadFromGoogleDrive().downloadFileFromGoogleDrive();
+    String? responseError =
+        await DownloadFromGoogleDrive().downloadFileFromGoogleDrive();
+    if (responseError != null) return responseError;
     List<dynamic>? data = await readJsonData();
 
     try {
@@ -56,8 +58,10 @@ class BackupDataHandler {
           database,
         );
       }
+      return null;
     } on Exception catch (e) {
       print(e.toString());
+      return e.toString();
     }
   }
 

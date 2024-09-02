@@ -295,7 +295,7 @@ class _DashboardState extends State<Dashboard> {
     return AppBar(
       centerTitle: true,
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           const SizedBox(),
           Text(
@@ -308,23 +308,23 @@ class _DashboardState extends State<Dashboard> {
           BlocListener<DriveBloc, DriveState>(
             bloc: driveBloc,
             listener: (context, state) {
-              if (state is DriveStateFailed) {
+              if (state is DriveUploadFailed) {
                 _updateAlert(context, state.errorMessage, Colors.red);
-              } else if (state is DriveStateSuccess) {
+              } else if (state is DriveUploadSuccess) {
                 _updateAlert(context, state.successMessage, Colors.green);
               }
             },
             child: BlocBuilder<DriveBloc, DriveState>(
               bloc: driveBloc,
               builder: (context, state) {
-                if (state is DriveStateLoading) {
+                if (state is DriveUploadLoading) {
                   return CircularProgressIndicator(
                     color: Theme.of(context).colorScheme.surface,
                   );
                 }
                 return IconButton(
                   onPressed: () {
-                    driveBloc.add(DriveEvent());
+                    driveBloc.add(DriveUploadEvent());
                   },
                   icon: Icon(
                     Icons.backup,
@@ -334,13 +334,33 @@ class _DashboardState extends State<Dashboard> {
               },
             ),
           ),
-          IconButton(
-            onPressed: () {
-              BackupDataHandler().restoreBackupData();
+          BlocListener<DriveBloc, DriveState>(
+            bloc: driveBloc,
+            listener: (context, state) {
+              if (state is DriveDownloadFailed) {
+                _updateAlert(context, state.errorMessage, Colors.red);
+              } else if (state is DriveDownloadSuccess) {
+                _updateAlert(context, state.successMessage, Colors.green);
+              }
             },
-            icon: Icon(
-              Icons.download,
-              color: Theme.of(context).colorScheme.surface,
+            child: BlocBuilder<DriveBloc, DriveState>(
+              bloc: driveBloc,
+              builder: (context, state) {
+                if (state is DriveDownloading) {
+                  return CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.surface,
+                  );
+                }
+                return IconButton(
+                  onPressed: () {
+                    driveBloc.add(DriveDownloadEvent());
+                  },
+                  icon: Icon(
+                    Icons.download,
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
+                );
+              },
             ),
           ),
         ],

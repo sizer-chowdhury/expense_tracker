@@ -7,16 +7,33 @@ import '../../../../domain/use_case/backup_data_use_case.dart';
 
 class DriveBloc extends Bloc<DriveEvent, DriveState> {
   DriveBloc() : super(DriveInitState()) {
-    on<DriveUploadEvent>(_driveBackup);
+    on<DriveUploadEvent>(_driveUploadBackup);
+    on<DriveDownloadEvent>(_driveDownloadBackup);
   }
 
-  FutureOr<void> _driveBackup(DriveEvent event, Emitter emit) async {
-    emit(DriveStateLoading());
+  FutureOr<void> _driveUploadBackup(
+    DriveUploadEvent event,
+    Emitter emit,
+  ) async {
+    emit(DriveUploadLoading());
     String? res = await sl<BackupDataUseCase>().getBackupData();
     if (res == null) {
-      emit(DriveStateSuccess(successMessage: 'Data uploaded successfully'));
+      emit(DriveUploadSuccess(successMessage: 'Data uploaded successfully'));
     } else {
-      emit(DriveStateFailed(errorMessage: 'Something went wrong'));
+      emit(DriveUploadFailed(errorMessage: res));
+    }
+  }
+
+  FutureOr<void> _driveDownloadBackup(
+    DriveDownloadEvent event,
+    Emitter<DriveState> emit,
+  ) async {
+    emit(DriveDownloading());
+    String? res = await sl<BackupDataUseCase>().restoreBackupData();
+    if (res == null) {
+      emit(DriveDownloadSuccess(successMessage: 'Data restored successfully'));
+    } else {
+      emit(DriveDownloadFailed(errorMessage: res));
     }
   }
 }
