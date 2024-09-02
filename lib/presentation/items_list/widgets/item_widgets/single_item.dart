@@ -39,7 +39,7 @@ class SingleItem extends StatelessWidget {
       ),
       trailing: IconButton(
         onPressed: () {
-          context.go("/${ExpenseDetailsPage.path}/${item?.date}");
+          context.go("/${ExpenseDetailsPage.path}/${item?.date}?source=secondPage");
         },
         icon: const Icon(
           Icons.arrow_forward_ios,

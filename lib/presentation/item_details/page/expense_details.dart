@@ -5,6 +5,7 @@ import 'package:expense_tracker/presentation/item_details/bloc/expense_details_e
 import 'package:expense_tracker/presentation/item_details/bloc/expense_details_state.dart';
 import 'package:expense_tracker/presentation/item_details/widget/button.dart';
 import 'package:expense_tracker/presentation/item_details/widget/custom_textfield.dart';
+import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,9 +19,10 @@ import '../../dashboard/page/dashboard.dart';
 class ExpenseDetailsPage extends StatefulWidget {
   static const String path = "expense-details";
 
-  const ExpenseDetailsPage({super.key, required this.dateTime});
+  const ExpenseDetailsPage({super.key, required this.dateTime, this.source});
 
   final DateTime dateTime;
+  final String? source;
 
   @override
   State<ExpenseDetailsPage> createState() => _ExpenseDetailsPageState();
@@ -56,7 +58,11 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            context.go('/${Dashboard.path}');
+            if (widget.source == null) {
+              context.go('/${Dashboard.path}');
+            } else {
+              context.go('/${ItemListPage.path}');
+            }
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),

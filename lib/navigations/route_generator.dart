@@ -2,7 +2,6 @@ import 'package:expense_tracker/presentation/dashboard/page/dashboard.dart';
 import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:go_router/go_router.dart';
 
-import '../presentation/items_list/page/item_list_page.dart';
 import '../presentation/item_details/page/expense_details.dart';
 import '../presentation/landing/landing.dart';
 import 'error_screen.dart';
@@ -16,7 +15,7 @@ class RouteGenerator {
       GoRoute(
         path: '/',
         redirect: (context, state) {
-          return "/${LandingPage.path}";
+          return "/${Dashboard.path}";
         },
       ),
       GoRoute(
@@ -30,7 +29,11 @@ class RouteGenerator {
         builder: (context, state) {
           final dateString = state.pathParameters['date']!;
           final date = DateTime.parse(dateString);
-          return ExpenseDetailsPage(dateTime: date);
+          final source = state.uri.queryParameters['source'];
+          return ExpenseDetailsPage(
+            dateTime: date,
+            source: source,
+          );
         },
       ),
       GoRoute(

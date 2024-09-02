@@ -92,7 +92,6 @@ class _LineGraphState extends State<LineGraph> {
                     lineBarsData: [
                       LineChartBarData(
                         spots: flSpots,
-                        isCurved: true,
                         belowBarData: BarAreaData(
                           show: true,
                           color: Theme.of(context).colorScheme.secondary,
