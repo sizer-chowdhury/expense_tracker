@@ -1,5 +1,3 @@
-import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
-import 'package:expense_tracker/data/data_source/backup/download_from_google_drive.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/drive_backup_bloc/drive_bloc.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/drive_backup_bloc/drive_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
@@ -15,8 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/utilities.dart';
 
-import '../../../config/service_locator.dart';
-import '../../../domain/use_case/backup_data_use_case.dart';
+import '../../../core/application/theme/colors.dart';
 import '../../item_details/page/expense_details.dart';
 import '../bloc/drive_backup_bloc/drive_state.dart';
 
@@ -67,8 +64,8 @@ class _DashboardState extends State<Dashboard> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: MyColors.surface,
       appBar: myAppBar(context),
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       floatingActionButton: Stack(
         children: [
           SizedBox(
@@ -97,7 +94,8 @@ class _DashboardState extends State<Dashboard> {
                   Size(screenWidth, 75),
                 ),
                 backgroundColor: WidgetStatePropertyAll(
-                  Theme.of(context).colorScheme.primary,
+                  // Theme.of(context).colorScheme.primary,
+                  MyColors.tertiary,
                 ),
               ),
               child: Row(
@@ -129,6 +127,7 @@ class _DashboardState extends State<Dashboard> {
             right: 10,
             top: 10,
             child: FloatingActionButton(
+              backgroundColor: MyColors.surface,
               onPressed: () {
                 DateTime parsedDate =
                     DateFormat('d MMM, yyyy').parse(_currentDate.value);
@@ -156,8 +155,10 @@ class _DashboardState extends State<Dashboard> {
                   );
                 },
                 child: Card(
+                  elevation: 10,
+                  color: MyColors.darkLight,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.only(top: 10, bottom: 10),
                     child: BlocBuilder<GraphBloc, GraphState>(
                       bloc: graphBloc,
                       builder: (context, state) {
@@ -204,6 +205,8 @@ class _DashboardState extends State<Dashboard> {
                   );
                 },
                 child: Card(
+                  elevation: 10,
+                  color: MyColors.dark,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: BlocBuilder<GraphBloc, GraphState>(
@@ -280,9 +283,12 @@ class _DashboardState extends State<Dashboard> {
           );
         },
         style: ElevatedButton.styleFrom(
+          // backgroundColor: selectedType == graphType[index]
+          //     ? Theme.of(context).colorScheme.primary
+          //     : Theme.of(context).colorScheme.secondary,
           backgroundColor: selectedType == graphType[index]
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.secondary,
+              ? MyColors.primary
+              : MyColors.secondary,
         ),
         child: Text(
           () {
@@ -296,7 +302,10 @@ class _DashboardState extends State<Dashboard> {
             }
           }(),
           style: TextStyle(
-            color: Theme.of(context).colorScheme.surface,
+            // color: Theme.of(context).colorScheme.surface,
+            color: selectedType == graphType[index]
+                ? MyColors.surface
+                : MyColors.tertiary,
             fontSize: screenWidth * .025,
           ),
         ),
@@ -308,16 +317,8 @@ class _DashboardState extends State<Dashboard> {
     return AppBar(
       centerTitle: true,
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(),
-          Text(
-            'Expense Tracker',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
           BlocListener<DriveBloc, DriveState>(
             bloc: driveBloc,
             listener: (context, state) {
@@ -345,6 +346,13 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 );
               },
+            ),
+          ),
+          Text(
+            'Expense Tracker',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.surface,
+              fontWeight: FontWeight.bold,
             ),
           ),
           BlocListener<DriveBloc, DriveState>(
@@ -379,7 +387,8 @@ class _DashboardState extends State<Dashboard> {
           ),
         ],
       ),
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      // backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: MyColors.primary,
     );
   }
 

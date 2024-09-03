@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/extensions/extensions.dart';
 
+import '../../../core/application/theme/colors.dart';
 import '../../dashboard/page/dashboard.dart';
 
 class ExpenseDetailsPage extends StatefulWidget {
@@ -55,7 +56,17 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: MyColors.surface,
       appBar: AppBar(
+        backgroundColor: MyColors.primary,
+        centerTitle: true,
+        title: Text(
+          'Expense Tracker',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.surface,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         leading: IconButton(
           onPressed: () {
             if (widget.source == null) {
@@ -117,10 +128,12 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         height: height * 0.1,
         width: width * 0.6,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
+          // color: Theme.of(context).colorScheme.primary,
+          color: MyColors.dark,
           borderRadius: BorderRadius.circular(10),
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
+              color: MyColors.tertiary,
               blurRadius: 2,
               spreadRadius: 1,
             )
@@ -209,7 +222,8 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
               _bloc.add(FetchExpenseEvent(date: widget.dateTime));
             },
             icon: Icons.delete_outline_outlined,
-            backgroundColor: theme.colorScheme.primary,
+            // backgroundColor: theme.colorScheme.primary,
+            backgroundColor: MyColors.primary,
             foregroundColor: Colors.white,
             borderRadius: BorderRadius.circular(12),
           )
@@ -228,7 +242,11 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   _cardItem(ExpenseDetailsEntity expense, ThemeData theme) {
     return ListTile(
       contentPadding: const EdgeInsets.all(16),
-      leading: Icon(Icons.shopping_cart, color: theme.colorScheme.primary),
+      leading: Icon(
+        Icons.shopping_cart,
+        // color: theme.colorScheme.primary,
+        color: MyColors.primary,
+      ),
       title: Text(
         expense.name,
         style: theme.textTheme.bodyLarge?.copyWith(
@@ -252,7 +270,8 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         ),
         IconButton(
           icon: const Icon(Icons.delete_outline_outlined),
-          color: theme.colorScheme.primary,
+          // color: theme.colorScheme.primary,
+          color: MyColors.tertiary,
           onPressed: () {
             _bloc.add(DeleteExpense(id: id));
             _bloc.add(FetchExpenseEvent(date: widget.dateTime));
@@ -338,7 +357,8 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           price.clear();
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          // backgroundColor: Theme.of(context).colorScheme.primary,
+          backgroundColor: MyColors.tertiary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
