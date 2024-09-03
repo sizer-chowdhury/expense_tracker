@@ -354,6 +354,7 @@ class _DashboardState extends State<Dashboard> {
                 _updateAlert(context, state.errorMessage, Colors.red);
               } else if (state is DriveDownloadSuccess) {
                 _updateAlert(context, state.successMessage, Colors.green);
+                graphBloc.add(const GraphEvent(graphType: GraphType.daily));
               }
             },
             child: BlocBuilder<DriveBloc, DriveState>(
