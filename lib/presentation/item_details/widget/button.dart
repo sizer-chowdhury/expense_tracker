@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/application/theme/colors.dart';
+
 class GradientButton extends StatelessWidget {
   final VoidCallback onPressed;
 
@@ -17,7 +19,8 @@ class GradientButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            // backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: MyColors.primary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
