@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:expense_tracker/core/application/theme/colors.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../domain/entity/item_entity.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class SingleItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
+      color: MyColors.surfaceLight,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
@@ -49,24 +51,43 @@ class SingleItem extends StatelessWidget {
           color: Theme.of(context).colorScheme.primary,
         ),
       ),
-      trailing: IconButton(
-        onPressed: () {
-          context.go(
-              "/${ExpenseDetailsPage.path}/${item?.date}?source=secondPage");
-        },
-        icon: const Icon(
-          Icons.arrow_forward_ios,
+      trailing: Container(
+        height: 80,
+        width: 80,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              // Theme.of(context).colorScheme.primary.withOpacity(1),
+              // Theme.of(context).colorScheme.primary.withOpacity(.7),
+              randomColor.withOpacity(1),
+              randomColor.withOpacity(.7),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          shape: BoxShape.circle,
+          border: Border.all(width: 2, color: MyColors.tertiary),
         ),
-        // color: Theme.of(context).colorScheme.primary,
-        color: randomColor,
+        child: Center(
+          child: Text(
+            '${item?.price}\$',
+            style: TextStyle(
+              color: MyColors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        ),
       ),
-      onTap: () {},
+      onTap: () {
+        context.pushReplacement("/${ExpenseDetailsPage.path}/${item?.date}");
+      },
     );
   }
 
   Container _leadingIcon(BuildContext context, Color randomColor) {
     return Container(
-      height: 100,
+      height: 80,
       width: 60,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -91,14 +112,21 @@ class SingleItem extends StatelessWidget {
 
   Text _itemTittle(BuildContext context) {
     final String today = DateTime.now().formattedDate();
-    String currentDay = item!.date;
+    String currentDay = formatDateString(item!.date);
     return Text(
-      (currentDay == today) ? 'Today' : item!.date,
+      (currentDay == today) ? 'Today' : formatDateString(item!.date),
       style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-          // color: Theme.of(context).colorScheme.primary,
-          color: MyColors.darkLight),
+        fontWeight: FontWeight.bold,
+        fontSize: 16,
+        // color: Theme.of(context).colorScheme.primary,
+        color: MyColors.darkLight,
+      ),
     );
+  }
+
+  String formatDateString(String dateString) {
+    DateTime dateTime = DateTime.parse(dateString);
+    String formattedDate = DateFormat('d MMM, yyyy').format(dateTime);
+    return formattedDate;
   }
 }

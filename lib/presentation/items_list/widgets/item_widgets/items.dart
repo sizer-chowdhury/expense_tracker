@@ -42,9 +42,6 @@ class _MyItemsState extends State<MyItems> with SingleTickerProviderStateMixin {
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            // GenerateBars().myBarChart(widget.itemList),
-            // if (widget.itemList != null) BarList(items: widget.itemList!),
             if (widget.itemList != null)
               Expanded(child: _buildItems(widget.itemList!)),
           ],

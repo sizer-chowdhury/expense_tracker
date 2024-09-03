@@ -64,6 +64,7 @@ class _LineGraphState extends State<LineGraph> {
 
       return FlSpot(index.toDouble(), yValue);
     }).toList();
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -71,8 +72,8 @@ class _LineGraphState extends State<LineGraph> {
         padding: const EdgeInsets.only(top: 35, bottom: 15, left: 30),
         child: widget.items.isEmpty
             ? SizedBox(
-                height: 200,
-                width: 400,
+                height: screenWidth * .05,
+                width: screenWidth * .25,
                 child: Padding(
                   padding: const EdgeInsets.all(80.0),
                   child: Text(
@@ -87,8 +88,8 @@ class _LineGraphState extends State<LineGraph> {
                 ),
               )
             : SizedBox(
-                height: 200,
-                width: 400,
+                height: screenWidth * .45,
+                width: screenWidth * .9,
                 child: LineChart(
                   LineChartData(
                     lineBarsData: [
