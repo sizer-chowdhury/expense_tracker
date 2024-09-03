@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:expense_tracker/data/data_source/backup/google_drive_auth.dart';
-import 'package:expense_tracker/data/data_source/download_from_google_drive.dart';
-import 'package:expense_tracker/data/data_source/upload_to_google_drive.dart';
+import 'package:expense_tracker/data/data_source/backup/download_from_google_drive.dart';
+import 'package:expense_tracker/data/data_source/backup/upload_to_google_drive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:googleapis/drive/v3.dart' as drive;

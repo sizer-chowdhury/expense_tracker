@@ -1,3 +1,7 @@
+import 'package:expense_tracker/navigations/route_generator.dart';
+import 'package:expense_tracker/presentation/dashboard/page/dashboard.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../../domain/entity/item_entity.dart';
 import 'single_item.dart';
 
@@ -49,6 +53,11 @@ class _MyItemsState extends State<MyItems> with SingleTickerProviderStateMixin {
 
   AppBar myAppBar(BuildContext context) {
     return AppBar(
+      leading: IconButton(
+          onPressed: () {
+            context.go('/${Dashboard.path}');
+          },
+          icon: const Icon(Icons.arrow_back)),
       centerTitle: true,
       title: Text(
         'Expense Tracker',

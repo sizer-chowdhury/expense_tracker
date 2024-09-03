@@ -1,5 +1,5 @@
 import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
-import 'package:expense_tracker/data/data_source/download_from_google_drive.dart';
+import 'package:expense_tracker/data/data_source/backup/download_from_google_drive.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/drive_backup_bloc/drive_bloc.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/drive_backup_bloc/drive_event.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
@@ -227,7 +227,7 @@ class _DashboardState extends State<Dashboard> {
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  context.push(
+                  context.go(
                     '/${ItemListPage.path}',
                   );
                 },
@@ -354,6 +354,7 @@ class _DashboardState extends State<Dashboard> {
                 _updateAlert(context, state.errorMessage, Colors.red);
               } else if (state is DriveDownloadSuccess) {
                 _updateAlert(context, state.successMessage, Colors.green);
+                graphBloc.add(const GraphEvent(graphType: GraphType.daily));
               }
             },
             child: BlocBuilder<DriveBloc, DriveState>(

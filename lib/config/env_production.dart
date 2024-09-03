@@ -1,17 +1,15 @@
-
 import 'env.dart';
 import 'env_types.dart';
 
-void main() async{
+void main() async {
   Env environment = EnvProduction();
   await environment.init();
   environment.run();
 }
 
-class EnvProduction extends Env{
-
+class EnvProduction extends Env {
   @override
-  EnvType get envType =>EnvType.production;
+  EnvType get envType => EnvType.production;
 
   @override
   // TODO: implement sentryDsn
