@@ -1,3 +1,4 @@
+import 'package:expense_tracker/core/application/theme/colors.dart';
 import 'package:expense_tracker/navigations/route_generator.dart';
 import 'package:expense_tracker/presentation/dashboard/page/dashboard.dart';
 import 'package:go_router/go_router.dart';
@@ -36,7 +37,8 @@ class _MyItemsState extends State<MyItems> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: myAppBar(context),
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      // backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: MyColors.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -66,7 +68,8 @@ class _MyItemsState extends State<MyItems> with SingleTickerProviderStateMixin {
           fontWeight: FontWeight.bold,
         ),
       ),
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      // backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: MyColors.primary,
     );
   }
 

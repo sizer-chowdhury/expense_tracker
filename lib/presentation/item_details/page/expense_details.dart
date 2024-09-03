@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/extensions/extensions.dart';
 
+import '../../../core/application/theme/colors.dart';
 import '../../dashboard/page/dashboard.dart';
 
 class ExpenseDetailsPage extends StatefulWidget {
@@ -55,7 +56,17 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: MyColors.surface,
       appBar: AppBar(
+        backgroundColor: MyColors.primary,
+        centerTitle: true,
+        title: Text(
+          'Expense Tracker',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.surface,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         leading: IconButton(
           onPressed: () {
             if (widget.source == null) {
@@ -117,10 +128,12 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         height: height * 0.1,
         width: width * 0.6,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
+          // color: Theme.of(context).colorScheme.primary,
+          color: MyColors.dark,
           borderRadius: BorderRadius.circular(10),
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
+              color: MyColors.tertiary,
               blurRadius: 2,
               spreadRadius: 1,
             )

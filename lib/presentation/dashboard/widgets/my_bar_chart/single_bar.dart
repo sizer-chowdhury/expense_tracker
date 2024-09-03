@@ -2,6 +2,7 @@ import 'package:expense_tracker/domain/entity/item_entity.dart';
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/application/theme/colors.dart';
 import '../../page/dashboard.dart';
 
 class SingleBar extends StatelessWidget {
@@ -21,7 +22,10 @@ class SingleBar extends StatelessWidget {
         children: [
           Text(
             '${singleEntity.price}',
-            style: TextStyle(fontSize: 10),
+            style: TextStyle(
+              fontSize: 10,
+              color: MyColors.surface,
+            ),
           ),
           Container(
             height: 150 * singleEntity.price / mx,
@@ -32,8 +36,10 @@ class SingleBar extends StatelessWidget {
                 topRight: Radius.circular(5),
               ),
               color: Color.lerp(
-                Theme.of(context).colorScheme.primary,
-                Colors.purple,
+                // Theme.of(context).colorScheme.primary,
+                // Colors.purple,
+                MyColors.primary,
+                MyColors.tertiary,
                 singleEntity.price / mx,
               ),
             ),
@@ -57,7 +63,8 @@ class SingleBar extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
-          color: Theme.of(context).colorScheme.secondary,
+          // color: Theme.of(context).colorScheme.secondary,
+          color: MyColors.surface,
         ),
         children: [
           TextSpan(
@@ -78,7 +85,8 @@ class SingleBar extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
-          color: Theme.of(context).colorScheme.secondary,
+          // color: Theme.of(context).colorScheme.secondary,
+          color: MyColors.surface,
         ),
         children: [
           TextSpan(
@@ -97,7 +105,8 @@ class SingleBar extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
-          color: Theme.of(context).colorScheme.primary,
+          // color: Theme.of(context).colorScheme.primary,
+          color: MyColors.surface,
         ),
         children: const [
           TextSpan(

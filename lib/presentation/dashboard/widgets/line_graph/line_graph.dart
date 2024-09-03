@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/application/theme/colors.dart';
 import '../../../../domain/entity/item_entity.dart';
 import '../../page/dashboard.dart';
 import 'package:intl/intl.dart';
@@ -57,7 +58,7 @@ class _LineGraphState extends State<LineGraph> {
   @override
   Widget build(BuildContext context) {
     List<FlSpot> flSpots = widget.items.asMap().entries.map((entry) {
-      int index = entry.key +1;
+      int index = entry.key + 1;
       ItemEntity item = entry.value;
       double yValue = item.price.toDouble();
 
@@ -77,7 +78,8 @@ class _LineGraphState extends State<LineGraph> {
                   child: Text(
                     'No data available to view',
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
+                      // color: Theme.of(context).colorScheme.secondary,
+                      color: MyColors.darkLight,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -92,12 +94,15 @@ class _LineGraphState extends State<LineGraph> {
                     lineBarsData: [
                       LineChartBarData(
                         spots: flSpots,
+                        isCurved: true,
                         belowBarData: BarAreaData(
                           show: true,
-                          color: Theme.of(context).colorScheme.secondary,
+                          // color: Theme.of(context).colorScheme.secondary,
+                          color: MyColors.darkLight,
                         ),
                       ),
                     ],
+                    minY: 0,
                     gridData: const FlGridData(
                       show: false,
                     ),
@@ -113,10 +118,8 @@ class _LineGraphState extends State<LineGraph> {
                         ),
                       ),
                       leftTitles: const AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: false,
-                          reservedSize: 20
-                        ),
+                        sideTitles:
+                            SideTitles(showTitles: false, reservedSize: 20),
                       ),
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
@@ -127,8 +130,10 @@ class _LineGraphState extends State<LineGraph> {
                             return Text(
                               _formatXValue(value),
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
+                                // color: Theme.of(context).colorScheme.secondary,
+                                color: MyColors.darkLight,
                                 fontSize: 12,
+                                fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.center,
                             );
@@ -136,7 +141,6 @@ class _LineGraphState extends State<LineGraph> {
                         ),
                       ),
                     ),
-
                   ),
                 ),
               ),
