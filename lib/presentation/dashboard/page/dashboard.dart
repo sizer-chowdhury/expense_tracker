@@ -26,7 +26,7 @@ class Dashboard extends StatefulWidget {
     super.key,
   });
 
-  static const String path = 'dashboard';
+  static const String path = '';
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -137,7 +137,8 @@ class _DashboardState extends State<Dashboard> {
                   String formattedDate =
                       DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(parsedDate);
 
-                  context.push("/${ExpenseDetailsPage.path}/$formattedDate");
+                  context.push(
+                      "/${ItemListPage.path}/${ExpenseDetailsPage.path}/$formattedDate");
                 },
                 child: const Icon(Icons.add),
               ),

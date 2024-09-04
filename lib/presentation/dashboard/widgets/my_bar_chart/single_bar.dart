@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/application/theme/colors.dart';
 import '../../../item_details/page/expense_details.dart';
+import '../../../items_list/page/item_list_page.dart';
 import '../../page/dashboard.dart';
 
 class SingleBar extends StatelessWidget {
@@ -32,8 +33,8 @@ class SingleBar extends StatelessWidget {
           GestureDetector(
             onTap: () {
               if (graphType == GraphType.daily) {
-                context
-                    .push("/${ExpenseDetailsPage.path}/${singleEntity.date}");
+                context.push(
+                    "/${ItemListPage.path}/${ExpenseDetailsPage.path}/${singleEntity.date}");
               }
             },
             child: Container(

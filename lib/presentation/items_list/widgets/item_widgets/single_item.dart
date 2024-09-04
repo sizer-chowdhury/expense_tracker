@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:expense_tracker/core/application/theme/colors.dart';
+import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -84,7 +85,8 @@ class SingleItem extends StatelessWidget {
         ),
       ),
       onTap: () {
-        context.pushReplacement("/${ExpenseDetailsPage.path}/${item?.date}");
+        context.push(
+            "/${ItemListPage.path}/${ExpenseDetailsPage.path}/${item?.date}");
       },
     );
   }
@@ -94,16 +96,6 @@ class SingleItem extends StatelessWidget {
       height: 80,
       width: 60,
       decoration: BoxDecoration(
-        // gradient: LinearGradient(
-        //   colors: [
-        //     // Theme.of(context).colorScheme.primary.withOpacity(1),
-        //     // Theme.of(context).colorScheme.primary.withOpacity(.7),
-        //     randomColor.withOpacity(1),
-        //     randomColor.withOpacity(.7),
-        //   ],
-        //   begin: Alignment.topLeft,
-        //   end: Alignment.bottomRight,
-        // ),
         color: randomColor,
         shape: BoxShape.circle,
       ),
