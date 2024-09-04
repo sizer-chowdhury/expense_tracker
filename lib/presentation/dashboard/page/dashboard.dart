@@ -6,12 +6,14 @@ import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_sta
 import 'package:expense_tracker/presentation/dashboard/widgets/line_graph/line_graph.dart';
 import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:expense_tracker/presentation/dashboard/widgets/my_bar_chart/bar_list.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/utilities.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../../core/application/theme/colors.dart';
 import '../../item_details/page/expense_details.dart';
@@ -56,6 +58,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+
     return VisibilityDetector(
       key: const Key(''),
       onVisibilityChanged: (isVisible) {
@@ -95,7 +98,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   backgroundColor: WidgetStatePropertyAll(
                     // Theme.of(context).colorScheme.primary,
-                    MyColors.tertiary,
+                    MyColors.primary,
                   ),
                 ),
                 child: Row(
@@ -150,7 +153,7 @@ class _DashboardState extends State<Dashboard> {
                 const SizedBox(height: 10),
                 Card(
                   elevation: 10,
-                  color: MyColors.darkLight,
+                  color: MyColors.white,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
                     child: BlocBuilder<GraphBloc, GraphState>(
@@ -201,7 +204,7 @@ class _DashboardState extends State<Dashboard> {
                   },
                   child: Card(
                     elevation: 10,
-                    color: MyColors.secondary,
+                    color: MyColors.white,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: BlocBuilder<GraphBloc, GraphState>(
@@ -232,6 +235,7 @@ class _DashboardState extends State<Dashboard> {
                     );
                   },
                   style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(MyColors.white),
                     padding: WidgetStateProperty.all(
                       const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                     ),
@@ -239,19 +243,28 @@ class _DashboardState extends State<Dashboard> {
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
                         side: BorderSide(
-                          color: Theme.of(context).colorScheme.secondary,
-                          width: 3,
+                          color: MyColors.primaryDeep,
+                          width: 2,
                         ),
                       ),
                     ),
                   ),
-                  child: Text(
-                    'History',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.history_edu,
+                        color: MyColors.tertiary,
+                      ),
+                      Text(
+                        'History',
+                        style: TextStyle(
+                          color: MyColors.tertiary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -330,8 +343,9 @@ class _DashboardState extends State<Dashboard> {
               bloc: driveBloc,
               builder: (context, state) {
                 if (state is DriveUploadLoading) {
-                  return CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.surface,
+                  return SpinKitThreeBounce(
+                    size: 20,
+                    color: MyColors.white,
                   );
                 }
                 return IconButton(
@@ -367,8 +381,9 @@ class _DashboardState extends State<Dashboard> {
               bloc: driveBloc,
               builder: (context, state) {
                 if (state is DriveDownloading) {
-                  return CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.surface,
+                  return SpinKitThreeBounce(
+                    size: 20,
+                    color: MyColors.white,
                   );
                 }
                 return IconButton(

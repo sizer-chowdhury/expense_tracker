@@ -26,7 +26,7 @@ class SingleBar extends StatelessWidget {
             '${singleEntity.price}',
             style: TextStyle(
               fontSize: 10,
-              color: MyColors.surface,
+              color: MyColors.primaryDeep,
             ),
           ),
           GestureDetector(
@@ -74,7 +74,7 @@ class SingleBar extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontSize: 16,
           // color: Theme.of(context).colorScheme.secondary,
-          color: MyColors.surface,
+          color: MyColors.tertiary,
         ),
         children: [
           TextSpan(
@@ -96,7 +96,7 @@ class SingleBar extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontSize: 16,
           // color: Theme.of(context).colorScheme.secondary,
-          color: MyColors.surface,
+          color: MyColors.tertiary,
         ),
         children: [
           TextSpan(
@@ -116,7 +116,7 @@ class SingleBar extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontSize: 16,
           // color: Theme.of(context).colorScheme.primary,
-          color: MyColors.surface,
+          color: MyColors.tertiary,
         ),
         children: const [
           TextSpan(

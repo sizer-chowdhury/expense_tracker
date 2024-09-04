@@ -133,7 +133,7 @@ class _LineGraphState extends State<LineGraph> {
                               _formatXValue(value),
                               style: TextStyle(
                                 // color: Theme.of(context).colorScheme.secondary,
-                                color: MyColors.surface,
+                                color: MyColors.tertiary,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
