@@ -29,10 +29,9 @@ class RouteGenerator {
         builder: (context, state) {
           final dateString = state.pathParameters['date']!;
           final date = DateTime.parse(dateString);
-          final source = state.uri.queryParameters['source'];
+
           return ExpenseDetailsPage(
             dateTime: date,
-            source: source,
           );
         },
       ),

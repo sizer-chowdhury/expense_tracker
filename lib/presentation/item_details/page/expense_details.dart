@@ -20,10 +20,9 @@ import '../../dashboard/page/dashboard.dart';
 class ExpenseDetailsPage extends StatefulWidget {
   static const String path = "expense-details";
 
-  const ExpenseDetailsPage({super.key, required this.dateTime, this.source});
+  const ExpenseDetailsPage({super.key, required this.dateTime});
 
   final DateTime dateTime;
-  final String? source;
 
   @override
   State<ExpenseDetailsPage> createState() => _ExpenseDetailsPageState();
@@ -69,13 +68,9 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         ),
         leading: IconButton(
           onPressed: () {
-            if (widget.source == null) {
-              context.go('/${Dashboard.path}');
-            } else {
-              context.go('/${ItemListPage.path}');
-            }
+            context.go('/${Dashboard.path}');
           },
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back),
         ),
       ),
       body: SafeArea(
@@ -210,7 +205,10 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   }
 
   Widget card(
-      BuildContext context, ThemeData theme, ExpenseDetailsEntity expense) {
+    BuildContext context,
+    ThemeData theme,
+    ExpenseDetailsEntity expense,
+  ) {
     return Slidable(
       key: Key('$expense'),
       endActionPane: ActionPane(
@@ -230,6 +228,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         ],
       ),
       child: Card(
+        color: MyColors.surfaceLight,
         elevation: 2.5,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),

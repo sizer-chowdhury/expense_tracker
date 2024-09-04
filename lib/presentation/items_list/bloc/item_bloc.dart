@@ -16,8 +16,9 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
     (List<ItemEntity>?, String?) response =
         await sl<GenerateReportUseCase>().getDailyReport();
     if (response.$1 != null) {
+      List<ItemEntity>? itemList = response.$1?.reversed.toList();
       emit(InitialFetchSuccess(
-        list: response.$1,
+        list: itemList,
       ));
     } else {
       emit(InitialFetchFailed(errorMessage: response.$2 ?? ''));
