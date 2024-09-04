@@ -124,11 +124,11 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         width: width * 0.6,
         decoration: BoxDecoration(
           // color: Theme.of(context).colorScheme.primary,
-          color: MyColors.dark,
+          color: MyColors.primary,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: MyColors.tertiary,
+              color: MyColors.darkLight,
               blurRadius: 2,
               spreadRadius: 1,
             )

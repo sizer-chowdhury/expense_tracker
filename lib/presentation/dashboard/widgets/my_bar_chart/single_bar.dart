@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/application/theme/colors.dart';
 import '../../../item_details/page/expense_details.dart';
+import '../../../items_list/page/item_list_page.dart';
 import '../../page/dashboard.dart';
 
 class SingleBar extends StatelessWidget {
@@ -26,14 +27,14 @@ class SingleBar extends StatelessWidget {
             '${singleEntity.price}',
             style: TextStyle(
               fontSize: 10,
-              color: MyColors.surface,
+              color: MyColors.primaryDeep,
             ),
           ),
           GestureDetector(
             onTap: () {
               if (graphType == GraphType.daily) {
-                context
-                    .push("/${ExpenseDetailsPage.path}/${singleEntity.date}");
+                context.push(
+                    "/${ItemListPage.path}/${ExpenseDetailsPage.path}/${singleEntity.date}");
               }
             },
             child: Container(
@@ -74,7 +75,7 @@ class SingleBar extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontSize: 16,
           // color: Theme.of(context).colorScheme.secondary,
-          color: MyColors.surface,
+          color: MyColors.tertiary,
         ),
         children: [
           TextSpan(
@@ -96,7 +97,7 @@ class SingleBar extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontSize: 16,
           // color: Theme.of(context).colorScheme.secondary,
-          color: MyColors.surface,
+          color: MyColors.tertiary,
         ),
         children: [
           TextSpan(
@@ -116,7 +117,7 @@ class SingleBar extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontSize: 16,
           // color: Theme.of(context).colorScheme.primary,
-          color: MyColors.surface,
+          color: MyColors.tertiary,
         ),
         children: const [
           TextSpan(
