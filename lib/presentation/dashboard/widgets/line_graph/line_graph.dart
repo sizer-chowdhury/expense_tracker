@@ -69,18 +69,19 @@ class _LineGraphState extends State<LineGraph> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
-        padding: const EdgeInsets.only(top: 35, bottom: 15, left: 30),
+        padding:
+            const EdgeInsets.only(top: 35, bottom: 15, left: 30, right: 30),
         child: widget.items.isEmpty
             ? SizedBox(
-                height: screenWidth * .05,
-                width: screenWidth * .25,
+                height: screenWidth * .45,
+                width: screenWidth * .9,
                 child: Padding(
                   padding: const EdgeInsets.all(80.0),
                   child: Text(
                     'No data available to view',
                     style: TextStyle(
                       // color: Theme.of(context).colorScheme.secondary,
-                      color: MyColors.darkLight,
+                      color: MyColors.surface,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -99,11 +100,11 @@ class _LineGraphState extends State<LineGraph> {
                         belowBarData: BarAreaData(
                           show: true,
                           // color: Theme.of(context).colorScheme.secondary,
-                          color: MyColors.darkLight,
+                          color: MyColors.tertiary,
                         ),
                       ),
                     ],
-                    minY: 0,
+                    // minY: 0,
                     gridData: const FlGridData(
                       show: false,
                     ),
@@ -132,7 +133,7 @@ class _LineGraphState extends State<LineGraph> {
                               _formatXValue(value),
                               style: TextStyle(
                                 // color: Theme.of(context).colorScheme.secondary,
-                                color: MyColors.darkLight,
+                                color: MyColors.surface,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),

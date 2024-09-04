@@ -1,8 +1,10 @@
 import 'package:expense_tracker/domain/entity/item_entity.dart';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/application/theme/colors.dart';
+import '../../../item_details/page/expense_details.dart';
 import '../../page/dashboard.dart';
 
 class SingleBar extends StatelessWidget {
@@ -27,20 +29,28 @@ class SingleBar extends StatelessWidget {
               color: MyColors.surface,
             ),
           ),
-          Container(
-            height: 150 * singleEntity.price / mx,
-            width: 30,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(5),
-                topRight: Radius.circular(5),
-              ),
-              color: Color.lerp(
-                // Theme.of(context).colorScheme.primary,
-                // Colors.purple,
-                MyColors.primary,
-                MyColors.tertiary,
-                singleEntity.price / mx,
+          GestureDetector(
+            onTap: () {
+              if (graphType == GraphType.daily) {
+                context
+                    .push("/${ExpenseDetailsPage.path}/${singleEntity.date}");
+              }
+            },
+            child: Container(
+              height: 150 * singleEntity.price / mx,
+              width: 30,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  topRight: Radius.circular(5),
+                ),
+                color: Color.lerp(
+                  // Theme.of(context).colorScheme.primary,
+                  // Colors.purple,
+                  MyColors.primary,
+                  MyColors.tertiary,
+                  singleEntity.price / mx,
+                ),
               ),
             ),
           ),

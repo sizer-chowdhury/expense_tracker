@@ -148,54 +148,47 @@ class _DashboardState extends State<Dashboard> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    context.push(
-                      '/${ItemListPage.path}',
-                    );
-                  },
-                  child: Card(
-                    elevation: 10,
-                    color: MyColors.darkLight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      child: BlocBuilder<GraphBloc, GraphState>(
-                        bloc: graphBloc,
-                        builder: (context, state) {
-                          if (state is GraphStateSuccess) {
-                            return Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(
-                                    3,
-                                    (index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: _selectGraph(
-                                          index,
-                                          state.graphType,
-                                          context,
-                                        ),
-                                      );
-                                    },
-                                  ),
+                Card(
+                  elevation: 10,
+                  color: MyColors.darkLight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 10),
+                    child: BlocBuilder<GraphBloc, GraphState>(
+                      bloc: graphBloc,
+                      builder: (context, state) {
+                        if (state is GraphStateSuccess) {
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  3,
+                                  (index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: _selectGraph(
+                                        index,
+                                        state.graphType,
+                                        context,
+                                      ),
+                                    );
+                                  },
                                 ),
-                                BarList(
-                                  items: state.itemList,
-                                  graphType: state.graphType,
-                                ),
-                              ],
-                            );
-                          } else if (state is GraphStateFailed) {
-                            return Text(state.errorMessage);
-                          } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      ),
+                              ),
+                              BarList(
+                                items: state.itemList,
+                                graphType: state.graphType,
+                              ),
+                            ],
+                          );
+                        } else if (state is GraphStateFailed) {
+                          return Text(state.errorMessage);
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
                     ),
                   ),
                 ),
@@ -208,7 +201,7 @@ class _DashboardState extends State<Dashboard> {
                   },
                   child: Card(
                     elevation: 10,
-                    color: MyColors.dark,
+                    color: MyColors.secondary,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: BlocBuilder<GraphBloc, GraphState>(
