@@ -28,7 +28,7 @@ class SingleItem extends StatelessWidget {
     required this.graphBloc,
   });
 
-  final ItemEntity? item;
+  final ExpenseDetailsEntity? item;
   final GraphBloc graphBloc;
 
   @override

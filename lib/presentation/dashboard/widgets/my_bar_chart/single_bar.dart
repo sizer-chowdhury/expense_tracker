@@ -1,4 +1,3 @@
-import 'package:expense_tracker/domain/entity/item_entity.dart';
 import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ class SingleBar extends StatelessWidget {
     required this.graphBloc,
   });
 
-  final ItemEntity singleEntity;
+  final ExpenseDetailsEntity singleEntity;
   final double mx;
   final GraphType graphType;
   final GraphBloc graphBloc;
