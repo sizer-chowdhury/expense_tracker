@@ -1,15 +1,14 @@
 import 'package:expense_tracker/core/application/theme/colors.dart';
-import 'package:expense_tracker/navigations/route_generator.dart';
 import 'package:expense_tracker/presentation/dashboard/page/dashboard.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../domain/entity/item_entity.dart';
+import '../../../../domain/entity/expense_details_entity.dart';
 import 'single_item.dart';
 
 import 'package:flutter/material.dart';
 
 class MyItems extends StatefulWidget {
-  final List<ItemEntity>? itemList;
+  final List<ExpenseDetailsEntity>? itemList;
   static const path = 'MyItems';
 
   const MyItems({super.key, required this.itemList});
@@ -70,7 +69,7 @@ class _MyItemsState extends State<MyItems> with SingleTickerProviderStateMixin {
     );
   }
 
-  ListView _buildItems(List<ItemEntity> itemList) {
+  ListView _buildItems(List<ExpenseDetailsEntity> itemList) {
     return ListView.builder(
       itemCount: itemList.length,
       itemBuilder: (context, index) {
@@ -86,7 +85,7 @@ class _MyItemsState extends State<MyItems> with SingleTickerProviderStateMixin {
 
   Transform _animatedItem(
     BuildContext context,
-    ItemEntity item,
+    ExpenseDetailsEntity item,
   ) {
     return Transform.translate(
       offset: Offset(

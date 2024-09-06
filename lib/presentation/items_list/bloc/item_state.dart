@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../domain/entity/item_entity.dart';
+import '../../../domain/entity/expense_details_entity.dart';
 
 class ItemState extends Equatable {
   @override
@@ -16,7 +16,7 @@ class InitialFetchFailed extends ItemState {
 }
 
 class InitialFetchSuccess extends ItemState {
-  final List<ItemEntity>? list;
+  final List<ExpenseDetailsEntity>? list;
 
   InitialFetchSuccess({required this.list});
 

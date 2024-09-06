@@ -1,9 +1,8 @@
-import 'package:expense_tracker/domain/entity/item_entity.dart';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/application/theme/colors.dart';
+import '../../../../domain/entity/expense_details_entity.dart';
 import '../../../item_details/page/expense_details.dart';
 import '../../../items_list/page/item_list_page.dart';
 import '../../page/dashboard.dart';
@@ -15,7 +14,7 @@ class SingleBar extends StatelessWidget {
     required this.mx,
     required this.graphType,
   });
-  final ItemEntity singleEntity;
+  final ExpenseDetailsEntity singleEntity;
   final double mx;
   final GraphType graphType;
   @override

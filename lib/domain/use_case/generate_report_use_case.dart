@@ -1,18 +1,19 @@
-import 'package:expense_tracker/domain/entity/item_entity.dart';
 import 'package:expense_tracker/domain/repository/generate_report_repo.dart';
+
+import '../entity/expense_details_entity.dart';
 
 class GenerateReportUseCase {
   GenerateReportRepo generateReportRepo;
   GenerateReportUseCase(this.generateReportRepo);
-  Future<(List<ItemEntity>?, String?)> getDailyReport() async {
+  Future<(List<ExpenseDetailsEntity>?, String?)> getDailyReport() async {
     return await generateReportRepo.getDailyReport();
   }
 
-  Future<(List<ItemEntity>?, String?)> getMonthlyReport() async {
+  Future<(List<ExpenseDetailsEntity>?, String?)> getMonthlyReport() async {
     return await generateReportRepo.getMonthlyReport();
   }
 
-  Future<(List<ItemEntity>?, String?)> getYearlyReport() async {
+  Future<(List<ExpenseDetailsEntity>?, String?)> getYearlyReport() async {
     return await generateReportRepo.getYearlyReport();
   }
 }

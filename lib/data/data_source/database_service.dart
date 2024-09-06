@@ -34,8 +34,8 @@ class DatabaseService {
   ) async {
     return await database.rawQuery('''
       SELECT 
-        strftime('$reportFormat', date) AS day,
-        SUM(price) AS total_price
+        strftime('$reportFormat', date) AS date,
+        SUM(price) AS price
       FROM 
         items
       GROUP BY 
@@ -62,7 +62,7 @@ class DatabaseService {
   ) async {
     return await database.rawQuery('''
       SELECT 
-        name as Item, price as Cost, date as Date
+        name, price, date
       FROM 
         items
     ''');

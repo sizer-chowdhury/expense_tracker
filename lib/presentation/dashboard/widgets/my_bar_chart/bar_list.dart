@@ -1,6 +1,6 @@
-import 'package:expense_tracker/domain/entity/item_entity.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../domain/entity/expense_details_entity.dart';
 import '../../page/dashboard.dart';
 import 'single_bar.dart';
 
@@ -10,7 +10,7 @@ class BarList extends StatelessWidget {
     required this.items,
     required this.graphType,
   });
-  final List<ItemEntity> items;
+  final List<ExpenseDetailsEntity> items;
   final GraphType graphType;
 
   @override

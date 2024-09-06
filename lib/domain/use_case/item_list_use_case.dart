@@ -3,7 +3,7 @@
 // import '../repository/item_list_repository.dart';
 //
 // class ItemListUseCase {
-//   Future<(List<ItemEntity>?, String?)> readItems() {
+//   Future<(List<ExpenseDetailsEntity>?, String?)> readItems() {
 //     return sl<ItemListRepository>().readItems();
 //   }
 // }

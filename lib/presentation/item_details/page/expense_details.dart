@@ -1,5 +1,7 @@
 import 'package:expense_tracker/config/service_locator.dart';
 import 'package:expense_tracker/domain/entity/expense_details_entity.dart';
+import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
+import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_event.dart';
 import 'package:expense_tracker/presentation/item_details/bloc/expense_details_bloc.dart';
 import 'package:expense_tracker/presentation/item_details/bloc/expense_details_event.dart';
 import 'package:expense_tracker/presentation/item_details/bloc/expense_details_state.dart';
@@ -35,6 +37,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   final BehaviorSubject<bool> _isAddButtonVisible =
       BehaviorSubject<bool>.seeded(true);
   final ExpenseDetailsBloc _bloc = sl<ExpenseDetailsBloc>();
+  final graphBloc = GraphBloc();
 
   @override
   void initState() {
@@ -50,6 +53,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
     _isAddButtonVisible.close();
     _bloc.close();
     super.dispose();
+    graphBloc.close();
   }
 
   @override
@@ -354,6 +358,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           );
           title.clear();
           price.clear();
+          graphBloc.add(const GraphEvent(graphType: GraphType.daily));
         },
         style: ElevatedButton.styleFrom(
           // backgroundColor: Theme.of(context).colorScheme.primary,

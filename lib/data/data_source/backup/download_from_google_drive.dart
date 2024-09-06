@@ -18,15 +18,13 @@ class DownloadFromGoogleDrive {
         print('drive files list length: ${fileList.files!.length}');
         exFile = fileList.files!.first;
       }
-      // Create a request to get the file content
+
       final media = await driveApi.files
           .get((exFile?.id)!, downloadOptions: drive.DownloadOptions.fullMedia);
 
-      // Handle the response as a stream of data
       final file = File(localFilePath);
       final sink = file.openWrite();
 
-      // Ensure media is a Stream
       if (media is drive.Media) {
         await for (var chunk in media.stream) {
           sink.add(chunk);

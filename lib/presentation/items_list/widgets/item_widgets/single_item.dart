@@ -4,11 +4,9 @@ import 'package:expense_tracker/core/application/theme/colors.dart';
 import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-
-import '../../../../domain/entity/item_entity.dart';
+import '../../../../domain/entity/expense_details_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:utilities/utilities.dart';
-
 import '../../../item_details/page/expense_details.dart';
 
 class SingleItem extends StatelessWidget {
@@ -27,7 +25,7 @@ class SingleItem extends StatelessWidget {
     required this.item,
   });
 
-  final ItemEntity? item;
+  final ExpenseDetailsEntity? item;
 
   @override
   Widget build(BuildContext context) {

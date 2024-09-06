@@ -48,6 +48,13 @@ class _DashboardState extends State<Dashboard> {
   ];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    graphBloc.add(const GraphEvent(graphType: GraphType.daily));
+  }
+
+  @override
   void dispose() {
     super.dispose();
     graphBloc.close();
@@ -59,131 +66,155 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return VisibilityDetector(
-      key: const Key(''),
-      onVisibilityChanged: (isVisible) {
-        if (isVisible.visibleFraction == 1.0) {
-          graphBloc.add(const GraphEvent(graphType: GraphType.daily));
-        }
-      },
-      child: Scaffold(
-        backgroundColor: MyColors.surface,
-        appBar: myAppBar(context),
-        floatingActionButton: Stack(
-          children: [
-            SizedBox(
-              width: screenWidth - 30,
-              child: ElevatedButton(
-                onPressed: () async {
-                  DateTime? selectedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
+    return Scaffold(
+      backgroundColor: MyColors.surface,
+      appBar: myAppBar(context),
+      floatingActionButton: Stack(
+        children: [
+          SizedBox(
+            width: screenWidth - 30,
+            child: ElevatedButton(
+              onPressed: () async {
+                DateTime? selectedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
+                );
 
-                  if (selectedDate != null) {
-                    _currentDate.add(selectedDate.formattedDate());
-                  }
-                },
-                style: ButtonStyle(
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  elevation: const WidgetStatePropertyAll(5),
-                  minimumSize: WidgetStatePropertyAll(
-                    Size(screenWidth, 75),
-                  ),
-                  backgroundColor: WidgetStatePropertyAll(
-                    // Theme.of(context).colorScheme.primary,
-                    MyColors.primary,
+                if (selectedDate != null) {
+                  _currentDate.add(selectedDate.formattedDate());
+                }
+              },
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.edit_calendar_outlined,
-                      color: Theme.of(context).colorScheme.surface,
-                    ),
-                    const SizedBox(width: 10),
-                    StreamBuilder<String>(
-                      stream: _currentDate,
-                      builder: (context, snapshot) {
-                        return Text(
-                          snapshot.data ?? 'select a date',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.surface,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                elevation: const WidgetStatePropertyAll(5),
+                minimumSize: WidgetStatePropertyAll(
+                  Size(screenWidth, 75),
+                ),
+                backgroundColor: WidgetStatePropertyAll(
+                  // Theme.of(context).colorScheme.primary,
+                  MyColors.primary,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.edit_calendar_outlined,
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
+                  const SizedBox(width: 10),
+                  StreamBuilder<String>(
+                    stream: _currentDate,
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.data ?? 'select a date',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.surface,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            right: 10,
+            top: 10,
+            child: FloatingActionButton(
+              backgroundColor: MyColors.surface,
+              onPressed: () {
+                DateTime parsedDate =
+                    DateFormat('d MMM, yyyy').parse(_currentDate.value);
+                String formattedDate =
+                    DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(parsedDate);
+
+                context.push(
+                    "/${ItemListPage.path}/${ExpenseDetailsPage.path}/$formattedDate");
+              },
+              child: const Icon(Icons.add),
+            ),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const SizedBox(height: 10),
+              Card(
+                elevation: 10,
+                color: MyColors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: BlocBuilder<GraphBloc, GraphState>(
+                    bloc: graphBloc,
+                    builder: (context, state) {
+                      if (state is GraphStateSuccess) {
+                        return Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                3,
+                                (index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: _selectGraph(
+                                      index,
+                                      state.graphType,
+                                      context,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            BarList(
+                              items: state.itemList,
+                              graphType: state.graphType,
+                            ),
+                          ],
                         );
-                      },
-                    ),
-                  ],
+                      } else if (state is GraphStateFailed) {
+                        return Text(state.errorMessage);
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              right: 10,
-              top: 10,
-              child: FloatingActionButton(
-                backgroundColor: MyColors.surface,
-                onPressed: () {
-                  DateTime parsedDate =
-                      DateFormat('d MMM, yyyy').parse(_currentDate.value);
-                  String formattedDate =
-                      DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(parsedDate);
-
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
                   context.push(
-                      "/${ItemListPage.path}/${ExpenseDetailsPage.path}/$formattedDate");
+                    '/${ItemListPage.path}',
+                  );
                 },
-                child: const Icon(Icons.add),
-              ),
-            ),
-          ],
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const SizedBox(height: 10),
-                Card(
+                child: Card(
                   elevation: 10,
                   color: MyColors.white,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 10, bottom: 10),
+                    padding: const EdgeInsets.only(bottom: 10),
                     child: BlocBuilder<GraphBloc, GraphState>(
                       bloc: graphBloc,
                       builder: (context, state) {
                         if (state is GraphStateSuccess) {
-                          return Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(
-                                  3,
-                                  (index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: _selectGraph(
-                                        index,
-                                        state.graphType,
-                                        context,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              BarList(
-                                items: state.itemList,
-                                graphType: state.graphType,
-                              ),
-                            ],
+                          return LineGraph(
+                            items: state.itemList,
+                            graphType: state.graphType,
                           );
                         } else if (state is GraphStateFailed) {
                           return Text(state.errorMessage);
@@ -196,80 +227,48 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    context.push(
-                      '/${ItemListPage.path}',
-                    );
-                  },
-                  child: Card(
-                    elevation: 10,
-                    color: MyColors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: BlocBuilder<GraphBloc, GraphState>(
-                        bloc: graphBloc,
-                        builder: (context, state) {
-                          if (state is GraphStateSuccess) {
-                            return LineGraph(
-                              items: state.itemList,
-                              graphType: state.graphType,
-                            );
-                          } else if (state is GraphStateFailed) {
-                            return Text(state.errorMessage);
-                          } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  context.push(
+                    '/${ItemListPage.path}',
+                  );
+                },
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(MyColors.white),
+                  padding: WidgetStateProperty.all(
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  ),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                      side: BorderSide(
+                        color: MyColors.primaryDeep,
+                        width: 2,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    context.push(
-                      '/${ItemListPage.path}',
-                    );
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(MyColors.white),
-                    padding: WidgetStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.history_edu,
+                      color: MyColors.tertiary,
                     ),
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        side: BorderSide(
-                          color: MyColors.primaryDeep,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.history_edu,
+                    Text(
+                      'History',
+                      style: TextStyle(
                         color: MyColors.tertiary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
                       ),
-                      Text(
-                        'History',
-                        style: TextStyle(
-                          color: MyColors.tertiary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

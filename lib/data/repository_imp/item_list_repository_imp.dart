@@ -1,10 +1,10 @@
+import '../../domain/entity/expense_details_entity.dart';
 import '../../domain/repository/item_list_repository.dart';
 import '../data_source/item_list_data_source.dart';
-import '../../domain/entity/item_entity.dart';
 
 class ItemListRepositoryImp implements ItemListRepository {
   @override
-  Future<(List<ItemEntity>?, String?)> readItems() async {
+  Future<(List<ExpenseDetailsEntity>?, String?)> readItems() async {
     ItemListDataSource itemListDataSource = ItemListDataSource();
     return await itemListDataSource.readItems();
   }

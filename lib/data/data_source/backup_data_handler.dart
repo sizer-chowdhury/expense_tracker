@@ -51,9 +51,9 @@ class BackupDataHandler {
       print(data?.length);
       for (Map<String, dynamic> jsonData in data!) {
         await DatabaseService().insertData(
-          jsonData['Item'],
-          jsonData['Cost'],
-          DateTime.parse(jsonData['Date']),
+          jsonData['name'],
+          jsonData['price'],
+          DateTime.parse(jsonData['date']),
           'items',
           database,
         );

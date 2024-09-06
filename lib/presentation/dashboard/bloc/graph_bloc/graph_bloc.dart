@@ -5,7 +5,7 @@ import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_sta
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/service_locator.dart';
-import '../../../../domain/entity/item_entity.dart';
+import '../../../../domain/entity/expense_details_entity.dart';
 import '../../page/dashboard.dart';
 
 class GraphBloc extends Bloc<GraphEvent, GraphState> {
@@ -14,7 +14,7 @@ class GraphBloc extends Bloc<GraphEvent, GraphState> {
   }
 
   FutureOr<void> _showGraph(GraphEvent event, Emitter<GraphState> emit) async {
-    late (List<ItemEntity>?, String?) res;
+    late (List<ExpenseDetailsEntity>?, String?) res;
     if (event.graphType == GraphType.daily) {
       res = await sl<GenerateReportUseCase>().getDailyReport();
     } else if (event.graphType == GraphType.monthly) {

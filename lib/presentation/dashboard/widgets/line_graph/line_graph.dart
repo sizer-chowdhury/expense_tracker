@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/application/theme/colors.dart';
-import '../../../../domain/entity/item_entity.dart';
+import '../../../../domain/entity/expense_details_entity.dart';
 import '../../page/dashboard.dart';
 import 'package:intl/intl.dart';
 
@@ -12,7 +12,7 @@ class LineGraph extends StatefulWidget {
     required this.graphType,
   });
 
-  final List<ItemEntity> items;
+  final List<ExpenseDetailsEntity> items;
   final GraphType graphType;
 
   @override
@@ -40,7 +40,7 @@ class _LineGraphState extends State<LineGraph> {
       return '';
     }
 
-    ItemEntity item = widget.items[index];
+    ExpenseDetailsEntity item = widget.items[index];
     DateTime date = _parseDate(item.date);
 
     switch (widget.graphType) {
@@ -59,7 +59,7 @@ class _LineGraphState extends State<LineGraph> {
   Widget build(BuildContext context) {
     List<FlSpot> flSpots = widget.items.asMap().entries.map((entry) {
       int index = entry.key + 1;
-      ItemEntity item = entry.value;
+      ExpenseDetailsEntity item = entry.value;
       double yValue = item.price.toDouble();
 
       return FlSpot(index.toDouble(), yValue);

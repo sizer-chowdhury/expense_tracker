@@ -1,9 +1,9 @@
-import '../entity/item_entity.dart';
+import '../entity/expense_details_entity.dart';
 
 abstract class GenerateReportRepo {
-  Future<(List<ItemEntity>?, String?)> getDailyReport();
+  Future<(List<ExpenseDetailsEntity>?, String?)> getDailyReport();
 
-  Future<(List<ItemEntity>?, String?)> getMonthlyReport();
+  Future<(List<ExpenseDetailsEntity>?, String?)> getMonthlyReport();
 
-  Future<(List<ItemEntity>?, String?)> getYearlyReport();
+  Future<(List<ExpenseDetailsEntity>?, String?)> getYearlyReport();
 }

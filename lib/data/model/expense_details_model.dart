@@ -15,4 +15,12 @@ class ExpenseDetailsModel extends ExpenseDetailsEntity {
       id: data['id'],
     );
   }
+  factory ExpenseDetailsModel.summary(Map<String, dynamic> data) {
+    return ExpenseDetailsModel(
+      name: '',
+      date: data['date'],
+      price: data['price'],
+      id: 0,
+    );
+  }
 }

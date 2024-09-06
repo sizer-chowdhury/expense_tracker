@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../../domain/entity/item_entity.dart';
+import '../../../../domain/entity/expense_details_entity.dart';
 import '../../page/dashboard.dart';
 
 class GraphState extends Equatable {
@@ -17,7 +17,7 @@ class GraphStateFailed extends GraphState {
 }
 
 class GraphStateSuccess extends GraphState {
-  final List<ItemEntity> itemList;
+  final List<ExpenseDetailsEntity> itemList;
   final GraphType graphType;
   GraphStateSuccess({
     required this.itemList,
