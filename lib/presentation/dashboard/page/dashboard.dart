@@ -6,7 +6,6 @@ import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_sta
 import 'package:expense_tracker/presentation/dashboard/widgets/line_graph/line_graph.dart';
 import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:expense_tracker/presentation/dashboard/widgets/my_bar_chart/bar_list.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +13,6 @@ import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:utilities/utilities.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import '../../../core/application/theme/colors.dart';
 import '../../item_details/page/expense_details.dart';
 import '../bloc/drive_backup_bloc/drive_state.dart';
@@ -49,7 +47,6 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     graphBloc.add(const GraphEvent(graphType: GraphType.daily));
   }
@@ -138,7 +135,9 @@ class _DashboardState extends State<Dashboard> {
                     DateFormat('yyyy-MM-dd HH:mm:ss.SSS').format(parsedDate);
 
                 context.push(
-                    "/${ItemListPage.path}/${ExpenseDetailsPage.path}/$formattedDate");
+                  '/${ItemListPage.path}/${ExpenseDetailsPage.path}/${formattedDate}',
+                  extra: graphBloc,
+                );
               },
               child: const Icon(Icons.add),
             ),
@@ -182,6 +181,7 @@ class _DashboardState extends State<Dashboard> {
                             BarList(
                               items: state.itemList,
                               graphType: state.graphType,
+                              graphBloc: graphBloc,
                             ),
                           ],
                         );
@@ -231,9 +231,7 @@ class _DashboardState extends State<Dashboard> {
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  context.push(
-                    '/${ItemListPage.path}',
-                  );
+                  context.push('/${ItemListPage.path}', extra: graphBloc);
                 },
                 style: ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(MyColors.white),

@@ -1,3 +1,5 @@
+import 'package:expense_tracker/domain/entity/item_entity.dart';
+import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../domain/entity/expense_details_entity.dart';
@@ -9,9 +11,11 @@ class BarList extends StatelessWidget {
     super.key,
     required this.items,
     required this.graphType,
+    required this.graphBloc,
   });
   final List<ExpenseDetailsEntity> items;
   final GraphType graphType;
+  final GraphBloc graphBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +29,7 @@ class BarList extends StatelessWidget {
       barList.add(SingleBar(
         singleEntity: items[i],
         graphType: graphType,
+        graphBloc: graphBloc,
         mx: mx,
       ));
       barList.add(const SizedBox(width: 20));

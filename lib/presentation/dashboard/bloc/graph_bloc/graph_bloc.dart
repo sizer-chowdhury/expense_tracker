@@ -24,12 +24,8 @@ class GraphBloc extends Bloc<GraphEvent, GraphState> {
     }
     if (res.$2 != null) {
       emit(GraphStateFailed(errorMessage: res.$2!));
-    } else if (event.graphType == GraphType.daily) {
-      emit(GraphStateSuccess(graphType: GraphType.daily, itemList: res.$1!));
-    } else if (event.graphType == GraphType.monthly) {
-      emit(GraphStateSuccess(graphType: GraphType.monthly, itemList: res.$1!));
     } else {
-      emit(GraphStateSuccess(graphType: GraphType.yearly, itemList: res.$1!));
+      emit(GraphStateSuccess(graphType: event.graphType, itemList: res.$1!));
     }
   }
 }

@@ -1,4 +1,6 @@
 import 'package:expense_tracker/core/application/theme/colors.dart';
+import 'package:expense_tracker/navigations/route_generator.dart';
+import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 import 'package:expense_tracker/presentation/dashboard/page/dashboard.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,8 +12,9 @@ import 'package:flutter/material.dart';
 class MyItems extends StatefulWidget {
   final List<ExpenseDetailsEntity>? itemList;
   static const path = 'MyItems';
+  final GraphBloc graphBloc;
 
-  const MyItems({super.key, required this.itemList});
+  const MyItems({super.key, required this.itemList, required this.graphBloc});
 
   @override
   State<MyItems> createState() => _MyItemsState();
@@ -96,6 +99,7 @@ class _MyItemsState extends State<MyItems> with SingleTickerProviderStateMixin {
         opacity: _controller.value,
         child: SingleItem(
           item: item,
+          graphBloc: widget.graphBloc,
         ),
       ),
     );

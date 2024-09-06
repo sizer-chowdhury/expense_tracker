@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+
 abstract class AddNewExpenseRepository {
-  Future<String?> addNewExpense(String description, int price, DateTime dateTime);
+  Future<Either<String, String>> addNewExpense(String description, int price, DateTime dateTime);
 }

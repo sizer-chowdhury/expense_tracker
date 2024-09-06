@@ -1,3 +1,5 @@
+import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
+
 import '../../../config/service_locator.dart';
 import '../bloc/item_bloc.dart';
 import '../bloc/item_event.dart';
@@ -9,8 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ItemListPage extends StatefulWidget {
-  const ItemListPage({super.key});
+  const ItemListPage({super.key, required this.graphBloc});
+
   static const String path = 'itemList';
+  final GraphBloc graphBloc;
 
   @override
   ItemListState createState() => ItemListState();
@@ -41,7 +45,10 @@ class ItemListState extends State<ItemListPage>
           case InitialFetchFailed():
             return MyErrorPage(errorMessage: state.errorMessage);
           case InitialFetchSuccess():
-            return MyItems(itemList: state.list);
+            return MyItems(
+              itemList: state.list,
+              graphBloc: widget.graphBloc,
+            );
           default:
             return const CircularProgressIndicator();
         }

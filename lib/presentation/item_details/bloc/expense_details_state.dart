@@ -31,3 +31,25 @@ class FetchExpenseSuccess extends ExpenseDetailsState {
   @override
   List<Object?> get props => [list, totalPrice];
 }
+
+class AddExpense extends ExpenseDetailsState {}
+
+class AddExpenseError extends ExpenseDetailsState {
+  final String errorMessage;
+
+  const AddExpenseError({required this.errorMessage});
+
+  @override
+  List<Object?> get props => [errorMessage];
+}
+
+class AddExpenseSuccess extends ExpenseDetailsState {
+  final String successMessage;
+
+  const AddExpenseSuccess({
+    required this.successMessage
+  });
+
+  @override
+  List<Object?> get props => [successMessage];
+}

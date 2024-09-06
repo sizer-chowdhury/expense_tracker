@@ -7,7 +7,6 @@ import 'package:expense_tracker/presentation/item_details/bloc/expense_details_e
 import 'package:expense_tracker/presentation/item_details/bloc/expense_details_state.dart';
 import 'package:expense_tracker/presentation/item_details/widget/button.dart';
 import 'package:expense_tracker/presentation/item_details/widget/custom_textfield.dart';
-import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,14 +16,18 @@ import 'package:rxdart/rxdart.dart';
 import 'package:utilities/extensions/extensions.dart';
 
 import '../../../core/application/theme/colors.dart';
+import '../../dashboard/bloc/graph_bloc/graph_bloc.dart';
+import '../../dashboard/bloc/graph_bloc/graph_event.dart';
 import '../../dashboard/page/dashboard.dart';
 
 class ExpenseDetailsPage extends StatefulWidget {
   static const String path = "expense-details";
 
-  const ExpenseDetailsPage({super.key, required this.dateTime});
+  const ExpenseDetailsPage(
+      {super.key, required this.dateTime, required this.graphBloc});
 
   final DateTime dateTime;
+  final GraphBloc graphBloc;
 
   @override
   State<ExpenseDetailsPage> createState() => _ExpenseDetailsPageState();
@@ -127,7 +130,6 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         height: height * 0.1,
         width: width * 0.6,
         decoration: BoxDecoration(
-          // color: Theme.of(context).colorScheme.primary,
           color: MyColors.primary,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
@@ -172,7 +174,19 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   }
 
   Widget _expenseList(BuildContext context) {
-    return BlocBuilder<ExpenseDetailsBloc, ExpenseDetailsState>(
+    return BlocConsumer<ExpenseDetailsBloc, ExpenseDetailsState>(
+      listener: (context, state) {
+        if (state is AddExpenseSuccess) {
+          widget.graphBloc.add(const GraphEvent(graphType: GraphType.daily));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.successMessage)),
+          );
+        } else if (state is AddExpenseError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.errorMessage)),
+          );
+        }
+      },
       bloc: _bloc,
       builder: (context, state) {
         if (state is FetchExpenseSuccess) {
@@ -180,7 +194,6 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           if (expenses == null || expenses.isEmpty) {
             return bottomItem(context);
           }
-
           return ListView.builder(
             controller: _scrollController,
             physics: const ClampingScrollPhysics(),
@@ -224,7 +237,6 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
               _bloc.add(FetchExpenseEvent(date: widget.dateTime));
             },
             icon: Icons.delete_outline_outlined,
-            // backgroundColor: theme.colorScheme.primary,
             backgroundColor: MyColors.primary,
             foregroundColor: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -247,7 +259,6 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
       contentPadding: const EdgeInsets.all(16),
       leading: Icon(
         Icons.shopping_cart,
-        // color: theme.colorScheme.primary,
         color: MyColors.primary,
       ),
       title: Text(
@@ -273,11 +284,11 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
         ),
         IconButton(
           icon: const Icon(Icons.delete_outline_outlined),
-          // color: theme.colorScheme.primary,
           color: MyColors.tertiary,
           onPressed: () {
             _bloc.add(DeleteExpense(id: id));
             _bloc.add(FetchExpenseEvent(date: widget.dateTime));
+            widget.graphBloc.add(const GraphEvent(graphType: GraphType.daily));
           },
         ),
       ],
@@ -361,7 +372,6 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
           graphBloc.add(const GraphEvent(graphType: GraphType.daily));
         },
         style: ElevatedButton.styleFrom(
-          // backgroundColor: Theme.of(context).colorScheme.primary,
           backgroundColor: MyColors.tertiary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/application/theme/colors.dart';
@@ -66,87 +68,88 @@ class _LineGraphState extends State<LineGraph> {
     }).toList();
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding:
-            const EdgeInsets.only(top: 35, bottom: 15, left: 30, right: 30),
-        child: widget.items.isEmpty
-            ? SizedBox(
-                height: screenWidth * .45,
-                width: screenWidth * .9,
-                child: Padding(
-                  padding: const EdgeInsets.all(80.0),
-                  child: Text(
-                    'No data available to view',
-                    style: TextStyle(
-                      // color: Theme.of(context).colorScheme.secondary,
-                      color: MyColors.surface,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+    return widget.items.isEmpty
+        ? SizedBox(
+            height: screenWidth * .6,
+            width: screenWidth * .9,
+            child: Padding(
+              padding: const EdgeInsets.all(80.0),
+              child: Text(
+                'No data available to view',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-              )
-            : SizedBox(
-                height: screenWidth * .45,
-                width: screenWidth * .9,
-                child: LineChart(
-                  LineChartData(
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: flSpots,
-                        isCurved: true,
-                        belowBarData: BarAreaData(
-                          show: true,
-                          // color: Theme.of(context).colorScheme.secondary,
-                          color: MyColors.tertiary,
+              ),
+            ),
+          )
+        : SizedBox(
+            height: screenWidth * .6,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 30, right: 30, top: 15, bottom: 10),
+                child: Container(
+                  width: max(screenWidth * 0.8, (flSpots.length * 40.0)),
+                  child: LineChart(
+                    LineChartData(
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: flSpots,
+                          isCurved: true,
+                          belowBarData: BarAreaData(
+                            show: true,
+                            // color: Theme.of(context).colorScheme.secondary,
+                            color: MyColors.tertiary,
+                          ),
                         ),
+                      ],
+                      // minY: 0,
+                      gridData: const FlGridData(
+                        show: false,
                       ),
-                    ],
-                    // minY: 0,
-                    gridData: const FlGridData(
-                      show: false,
-                    ),
-                    titlesData: FlTitlesData(
-                      rightTitles: const AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: false,
+                      titlesData: FlTitlesData(
+                        rightTitles: const AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: false,
+                          ),
                         ),
-                      ),
-                      topTitles: const AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: false,
+                        topTitles: const AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: false,
+                          ),
                         ),
-                      ),
-                      leftTitles: const AxisTitles(
-                        sideTitles:
-                            SideTitles(showTitles: false, reservedSize: 20),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          interval: 1,
-                          reservedSize: 15,
-                          getTitlesWidget: (value, meta) {
-                            return Text(
-                              _formatXValue(value),
-                              style: TextStyle(
-                                // color: Theme.of(context).colorScheme.secondary,
-                                color: MyColors.tertiary,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            );
-                          },
+                        leftTitles: const AxisTitles(
+                          sideTitles:
+                              SideTitles(showTitles: false, reservedSize: 20),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            interval: 1,
+                            reservedSize: 15,
+                            getTitlesWidget: (value, meta) {
+                              return Text(
+                                _formatXValue(value),
+                                style: TextStyle(
+                                  // color: Theme.of(context).colorScheme.secondary,
+                                  color: MyColors.tertiary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-      ),
-    );
+            ),
+          );
   }
 }

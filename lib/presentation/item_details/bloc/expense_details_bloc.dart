@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:core';
+import 'package:dartz/dartz.dart';
 import 'package:expense_tracker/config/service_locator.dart';
 import 'package:expense_tracker/domain/use_case/add_new_expense_use_case.dart';
 import 'package:expense_tracker/domain/use_case/delete_expense_use_case.dart';
@@ -18,10 +19,19 @@ class ExpenseDetailsBloc
 
   void _addNewExpense(
       AddNewExpense event, Emitter<ExpenseDetailsState> emit) async {
-    await sl<AddNewExpenseUseCase>().addNewExpense(
+    final result = await sl<AddNewExpenseUseCase>().addNewExpense(
       description: event.description,
       price: event.price,
       dateTime: event.dateTime,
+    );
+
+    result.fold(
+      (errorMessage) {
+        emit(AddExpenseError(errorMessage: errorMessage));
+      },
+      (successMessage) {
+        emit(AddExpenseSuccess(successMessage: successMessage));
+      },
     );
   }
 
