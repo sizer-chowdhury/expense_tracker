@@ -13,7 +13,6 @@ import '../../../item_details/page/expense_details.dart';
 class SingleItem extends StatelessWidget {
   final List<Color> colorArray = [
     MyColors.primaryDeep.withAlpha(100),
-    MyColors.primaryDeep.withAlpha(110),
     MyColors.primaryDeep.withAlpha(140),
     MyColors.primaryDeep.withAlpha(170),
     MyColors.primaryDeep.withAlpha(200),
@@ -61,16 +60,6 @@ class SingleItem extends StatelessWidget {
         height: 80,
         width: 80,
         decoration: BoxDecoration(
-          // gradient: LinearGradient(
-          //   colors: [
-          //     // Theme.of(context).colorScheme.primary.withOpacity(1),
-          //     // Theme.of(context).colorScheme.primary.withOpacity(.7),
-          //     randomColor.withOpacity(1),
-          //     randomColor.withOpacity(.7),
-          //   ],
-          //   begin: Alignment.topLeft,
-          //   end: Alignment.bottomRight,
-          // ),
           color: randomColor,
           shape: BoxShape.circle,
           border: Border.all(width: 2, color: MyColors.tertiary),
@@ -81,7 +70,7 @@ class SingleItem extends StatelessWidget {
             style: TextStyle(
               color: MyColors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 14,
             ),
           ),
         ),
