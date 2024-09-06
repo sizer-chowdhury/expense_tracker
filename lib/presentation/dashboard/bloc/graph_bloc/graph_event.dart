@@ -10,3 +10,4 @@ class GraphEvent extends Equatable {
   @override
   List<Object?> get props => [graphType];
 }
+class RefreshData {}

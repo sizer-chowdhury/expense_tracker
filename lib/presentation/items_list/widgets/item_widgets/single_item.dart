@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:expense_tracker/core/application/theme/colors.dart';
+import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 import 'package:expense_tracker/presentation/items_list/page/item_list_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -22,12 +23,15 @@ class SingleItem extends StatelessWidget {
     MyColors.primaryDeep.withAlpha(240),
     MyColors.primaryDeep.withAlpha(255),
   ];
+
   SingleItem({
     super.key,
     required this.item,
+    required this.graphBloc,
   });
 
   final ItemEntity? item;
+  final GraphBloc graphBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +90,9 @@ class SingleItem extends StatelessWidget {
       ),
       onTap: () {
         context.push(
-            "/${ItemListPage.path}/${ExpenseDetailsPage.path}/${item?.date}");
+          '/${ItemListPage.path}/${ExpenseDetailsPage.path}/${item?.date}',
+          extra: graphBloc,
+        );
       },
     );
   }

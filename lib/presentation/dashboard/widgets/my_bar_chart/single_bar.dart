@@ -1,4 +1,5 @@
 import 'package:expense_tracker/domain/entity/item_entity.dart';
+import 'package:expense_tracker/presentation/dashboard/bloc/graph_bloc/graph_bloc.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,10 +15,14 @@ class SingleBar extends StatelessWidget {
     required this.singleEntity,
     required this.mx,
     required this.graphType,
+    required this.graphBloc,
   });
+
   final ItemEntity singleEntity;
   final double mx;
   final GraphType graphType;
+  final GraphBloc graphBloc;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -34,7 +39,8 @@ class SingleBar extends StatelessWidget {
             onTap: () {
               if (graphType == GraphType.daily) {
                 context.push(
-                    "/${ItemListPage.path}/${ExpenseDetailsPage.path}/${singleEntity.date}");
+                    '/${ItemListPage.path}/${ExpenseDetailsPage.path}/${singleEntity.date}',
+                    extra: graphBloc);
               }
             },
             child: Container(
