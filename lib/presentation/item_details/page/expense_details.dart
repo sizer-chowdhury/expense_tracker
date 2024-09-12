@@ -235,6 +235,8 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
             onPressed: (context) {
               _bloc.add(DeleteExpense(id: expense.id));
               _bloc.add(FetchExpenseEvent(date: widget.dateTime));
+              widget.graphBloc
+                  .add(const GraphEvent(graphType: GraphType.daily));
             },
             icon: Icons.delete_outline_outlined,
             backgroundColor: MyColors.primary,

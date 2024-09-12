@@ -1,12 +1,11 @@
 import 'package:expense_tracker/data/data_source/backup/google_drive_auth.dart';
-import 'package:expense_tracker/data/data_source/backup_data_handler.dart';
+import 'package:expense_tracker/data/data_source/backup/backup_data_handler.dart';
 import 'package:expense_tracker/data/data_source/backup/download_from_google_drive.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:googleapis_auth/auth_io.dart';
 import 'dart:io';
 import 'package:googleapis/drive/v3.dart' as drive;
-import 'package:path_provider/path_provider.dart';
 
 class UploadGoogleDrive {
   Future<String?> uploadFileToGoogleDrive(File jsonFile) async {
@@ -34,7 +33,9 @@ class UploadGoogleDrive {
         );
         print('File updated: ${updatedFile.id}');
       } else {
-        final driveFile = drive.File()..name = 'data.json';
+        final driveFile = drive.File()
+          ..name = 'data.json'
+          ..parents = ['appDataFolder'];
         exFile = await driveApi.files.create(driveFile, uploadMedia: media);
       }
       return null;

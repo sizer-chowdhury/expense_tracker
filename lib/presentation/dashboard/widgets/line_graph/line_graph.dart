@@ -92,7 +92,7 @@ class _LineGraphState extends State<LineGraph> {
                 padding: const EdgeInsets.only(
                     left: 30, right: 30, top: 15, bottom: 10),
                 child: Container(
-                  width: max(screenWidth * 0.8, (flSpots.length * 40.0)),
+                  width: max(screenWidth * 0.8, (flSpots.length * 50.0)),
                   child: LineChart(
                     LineChartData(
                       lineBarsData: [

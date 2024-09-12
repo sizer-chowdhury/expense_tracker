@@ -147,63 +147,59 @@ class _DashboardState extends State<Dashboard> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 15, right: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const SizedBox(height: 10),
-              Card(
-                elevation: 10,
-                color: MyColors.white,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 10),
-                  child: BlocBuilder<GraphBloc, GraphState>(
-                    bloc: graphBloc,
-                    builder: (context, state) {
-                      if (state is GraphStateSuccess) {
-                        return Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(
-                                3,
-                                (index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: _selectGraph(
-                                      index,
-                                      state.graphType,
-                                      context,
-                                    ),
-                                  );
-                                },
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const SizedBox(height: 10),
+                Card(
+                  elevation: 10,
+                  color: MyColors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 10),
+                    child: BlocBuilder<GraphBloc, GraphState>(
+                      bloc: graphBloc,
+                      builder: (context, state) {
+                        if (state is GraphStateSuccess) {
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  3,
+                                  (index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: _selectGraph(
+                                        index,
+                                        state.graphType,
+                                        context,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                            BarList(
-                              items: state.itemList,
-                              graphType: state.graphType,
-                              graphBloc: graphBloc,
-                            ),
-                          ],
-                        );
-                      } else if (state is GraphStateFailed) {
-                        return Text(state.errorMessage);
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
+                              BarList(
+                                items: state.itemList,
+                                graphType: state.graphType,
+                                graphBloc: graphBloc,
+                              ),
+                            ],
+                          );
+                        } else if (state is GraphStateFailed) {
+                          return Text(state.errorMessage);
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  context.push(
-                    '/${ItemListPage.path}',
-                  );
-                },
-                child: Card(
+                const SizedBox(height: 10),
+                Card(
                   elevation: 10,
                   color: MyColors.white,
                   child: Padding(
@@ -227,46 +223,46 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              TextButton(
-                onPressed: () {
-                  context.push('/${ItemListPage.path}', extra: graphBloc);
-                },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(MyColors.white),
-                  padding: WidgetStateProperty.all(
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  ),
-                  shape: WidgetStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                      side: BorderSide(
-                        color: MyColors.primaryDeep,
-                        width: 2,
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    context.push('/${ItemListPage.path}', extra: graphBloc);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(MyColors.white),
+                    padding: WidgetStateProperty.all(
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    ),
+                    shape: WidgetStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        side: BorderSide(
+                          color: MyColors.primaryDeep,
+                          width: 2,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.history_edu,
-                      color: MyColors.tertiary,
-                    ),
-                    Text(
-                      'History',
-                      style: TextStyle(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.history_edu,
                         color: MyColors.tertiary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
                       ),
-                    ),
-                  ],
+                      Text(
+                        'History',
+                        style: TextStyle(
+                          color: MyColors.tertiary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
